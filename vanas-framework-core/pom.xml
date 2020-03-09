@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.35liuqi</groupId>
+		<artifactId>vanas-framework</artifactId>
+		<version>1.0.0.0304001-Preview</version>
+		<relativePath>../pom.xml</relativePath>
+	</parent>
+
+	<packaging>jar</packaging>
+
+	<artifactId>vanas-framework-core</artifactId>
+	<version>1.0.0.0304001-Preview</version>
+	<name>vanas-framework-core</name>
+	<description>Demo project for Spring Boot</description>
+
+	<properties>
+		<java.version>1.8</java.version>
+		<rapid-framework.version>4.0</rapid-framework.version>
+		<fasterxml.jackson.version>2.9.0.pr3</fasterxml.jackson.version>
+		<commons.lang.version>2.6</commons.lang.version>
+	</properties>
+
+	<dependencies>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.mybatis.spring.boot</groupId>
+			<artifactId>mybatis-spring-boot-starter</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-log4j2</artifactId>
+		</dependency>
+
+		<!-- 简化注释实例化 -->
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+		</dependency>
+
+		<!-- freemarker -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-freemarker</artifactId>
+		</dependency>
+
+		<!-- 使用MappingJackson2HttpMessageConverter，加入最新的FastJackson依赖 -->
+		<dependency>
+			<groupId>com.googlecode.rapid-framework</groupId>
+			<artifactId>rapid-core</artifactId>
+			<version>${rapid-framework.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-core</artifactId>
+			<version>${fasterxml.jackson.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>${fasterxml.jackson.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-annotations</artifactId>
+			<version>${fasterxml.jackson.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.directory.studio</groupId>
+			<artifactId>org.apache.commons.lang</artifactId>
+			<version>${commons.lang.version}</version>
+		</dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
+        </dependency>
+
+		<!-- 让 springboot 支持 cache -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-cache</artifactId>
+		</dependency>
+
+		<!-- ehcache 缓存 -->
+		<dependency>
+			<groupId>org.ehcache</groupId>
+			<artifactId>ehcache</artifactId>
+		</dependency>
+
+		<!-- spring cache 托管 -->
+		<dependency>
+			<groupId>javax.cache</groupId>
+			<artifactId>cache-api</artifactId>
+		</dependency>
+
+		<!-- 用 ehcache 2.x -->
+		<!--<dependency>-->
+			<!--<groupId>net.sf.ehcache</groupId>-->
+			<!--<artifactId>ehcache</artifactId>-->
+			<!--<version>2.10.6</version>-->
+		<!--</dependency>-->
+
+    </dependencies>
+
+</project>

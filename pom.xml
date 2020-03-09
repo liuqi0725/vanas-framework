@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<!-- 继承自 springboot 父工程 -->
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.2.5.RELEASE</version>
+		<relativePath/> <!-- lookup parent from repository -->
+	</parent>
+
+	<packaging>pom</packaging>
+
+	<!-- 基础信息 -->
+	<groupId>com.35liuqi</groupId>
+	<artifactId>vanas-framework</artifactId>
+	<version>1.0.0.0304001-Preview</version>
+	<name>vanas-framework</name>
+	<description>基于Springboot 的 web 应用开发工具包</description>
+
+	<url>https://github.com/liuqi0725/NunaJavaWebSupport</url>
+
+	<developers>
+		<developer>
+			<name>liu.qi</name>
+			<email>liuqi_0725@aliyun.com</email>
+		</developer>
+	</developers>
+
+	<licenses>
+		<license>
+			<name>The ApacheSoftware License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<scm>
+		<tag>master</tag>
+		<connection>https://gitee.com/hjj520/payment-core.git</connection>
+		<developerConnection>https://gitee.com/hjj520/</developerConnection>
+		<url>https://gitee.com/hjj520/payment-core.git</url>
+    </scm>
+
+
+
+	<properties>
+		<java.version>1.8</java.version>
+		<mybatis.version>2.1.1</mybatis.version>
+		<springboot.version>2.2.5.RELEASE</springboot.version>
+	</properties>
+
+	<!-- 模块 -->
+	<modules>
+		<module>vanas-framework-core</module>
+		<module>vanas-framework-security</module>
+		<module>vanas-framework-util</module>
+	</modules>
+
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-starter-web</artifactId>
+				<version>${springboot.version}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>org.springframework.boot</groupId>
+						<artifactId>spring-boot-starter-logging</artifactId>
+					</exclusion>
+				</exclusions>
+				<!-- 去掉springboot默认配置的 logback 采用 log4j2 -->
+			</dependency>
+
+			<dependency>
+				<groupId>org.mybatis.spring.boot</groupId>
+				<artifactId>mybatis-spring-boot-starter</artifactId>
+				<version>${mybatis.version}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>org.springframework.boot</groupId>
+						<artifactId>spring-boot-starter-logging</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-starter-log4j2</artifactId>
+				<version>${springboot.version}</version>
+			</dependency>
+
+			<!-- junit 测试 -->
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>3.8.1</version>
+				<scope>test</scope>
+			</dependency>
+
+		</dependencies>
+	</dependencyManagement>
+
+
+	<!--指定使用maven打包-->
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.1</version>
+				<configuration>
+					<source>${java.version}</source>
+					<target>${java.version}</target>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.19</version>
+				<configuration>
+					<skipTests>true</skipTests>    <!--默认关掉单元测试 -->
+				</configuration>
+			</plugin>
+
+			<!-- Javadoc -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.10.4</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+
+</project>
