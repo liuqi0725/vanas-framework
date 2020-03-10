@@ -7,6 +7,7 @@ import cn.org.rapid_framework.freemarker.directive.OverrideDirective;
 import cn.org.rapid_framework.freemarker.directive.SuperDirective;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver;
 

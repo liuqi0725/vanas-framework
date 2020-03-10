@@ -17,7 +17,7 @@ public class CacheUtil {
     }
 
     public static Object getVal(String cacheName, Object key){
-        return Vanas.cacheManager.getCache(cacheName).get(key);
+        return Vanas.cacheManager.getCache(cacheName).get(key).get();
     }
 
 }

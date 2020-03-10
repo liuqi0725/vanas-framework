@@ -38,7 +38,7 @@ public class SecurityUtil {
     public static boolean isLogin(){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
-        return auth instanceof AnonymousAuthenticationToken;
+        return !(auth instanceof AnonymousAuthenticationToken);
     }
 
     /**

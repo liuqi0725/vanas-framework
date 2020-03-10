@@ -2,6 +2,7 @@ package com.liuqi.vanasframework.core.mvc.handler;
 
 
 import com.liuqi.vanasframework.core.mvc.entity.ErrorMap;
+import com.liuqi.vanasframework.core.mvc.res.DataResult;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
@@ -157,6 +158,23 @@ public class ResponseJsonHandler implements Serializable{
         }
 
         map.put(ATTR_MSG , msg);
+
+        return map;
+    }
+
+    public Map<String,Object> renderJSON(DataResult result){
+
+        Map<String, Object> map = new HashMap<String,Object>();
+
+        map.put(ATTR_SUCCESS , result.getStatus());
+
+        if(success){
+            map.put(ATTR_DATA , result.getData());
+        }else{
+            map.put(ATTR_ERRORINFO , null);
+        }
+
+        map.put(ATTR_MSG , result.getMsg());
 
         return map;
     }

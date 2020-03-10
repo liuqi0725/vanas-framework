@@ -1,4 +1,4 @@
-package com.liuqi.vanasframework.core.mvc.base;
+package com.liuqi.vanasframework.core.mvc.entity;
 
 import java.io.Serializable;
 

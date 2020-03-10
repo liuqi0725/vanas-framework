@@ -56,8 +56,7 @@ public class ErrorMap implements Serializable{
         this.setPath((String)springErrorMap.get("path"));
         this.setError((String)springErrorMap.get("error"));
         this.setErrorMsg((String)springErrorMap.get("message"));
-        this.setError((String)springErrorMap.get("status"));
-        this.setErrorCode((String)springErrorMap.get("error"));
+        this.setErrorCode(String.valueOf( (Integer)springErrorMap.get("status") ));
         this.setTimestamp((Date)springErrorMap.get("timestamp"));
     }
 

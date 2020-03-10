@@ -1,11 +1,13 @@
-package com.liuqi.vanasframework.security.access;
+package com.liuqi.vanasframework.security;
 
+import com.liuqi.vanasframework.security.access.VanasSecurityConfigAdapter;
+import com.liuqi.vanasframework.security.access.VanasUserDetailService;
 import com.liuqi.vanasframework.security.crypto.VanasPasswordEncoder;
+import com.liuqi.vanasframework.security.filter.LoginAutenticationProvider;
 import com.liuqi.vanasframework.security.filter.SecurityDecisionManager;
 import com.liuqi.vanasframework.security.filter.SecurityInterceptor;
 import com.liuqi.vanasframework.security.service.SecurityMetadataSource;
-import com.liuqi.vanasframework.security.service.UserDetailService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.liuqi.vanasframework.security.service.VanasUserDetailServiceImpl;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configurers.userdetails.DaoAuthenticationConfigurer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -33,11 +35,11 @@ import org.springframework.util.Assert;
  * @version v1.0 , Create at 10:13 PM 2020/3/4
  */
 @EnableWebSecurity
-public class VanasSecurityConfigImpl extends WebSecurityConfigurerAdapter {
+public class VanasSecurityConfig extends WebSecurityConfigurerAdapter {
 
     VanasSecurityConfigAdapter vanasSecurityConfigAdapter;
 
-    public VanasSecurityConfigImpl(VanasSecurityConfigAdapter vanasSecurityConfigAdapter){
+    public VanasSecurityConfig(VanasSecurityConfigAdapter vanasSecurityConfigAdapter){
         this.vanasSecurityConfigAdapter = vanasSecurityConfigAdapter;
     }
 
@@ -72,7 +74,9 @@ public class VanasSecurityConfigImpl extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
 
-        DaoAuthenticationConfigurer authenticationConfigurer = auth.userDetailsService(new UserDetailService(vanasSecurityConfigAdapter.getVanasSecurityAdapter()));
+        VanasUserDetailService service = new VanasUserDetailServiceImpl(vanasSecurityConfigAdapter.getVanasSecurityAdapter());
+        DaoAuthenticationConfigurer authenticationConfigurer =
+                auth.userDetailsService(service);
 
         if(vanasSecurityConfigAdapter.getVanasPasswordVoter() == null){
             /*

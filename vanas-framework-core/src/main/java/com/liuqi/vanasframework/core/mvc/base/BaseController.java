@@ -1,6 +1,8 @@
 package com.liuqi.vanasframework.core.mvc.base;
 
 import com.liuqi.vanasframework.core.conf.norm.ResultStatus;
+import com.liuqi.vanasframework.core.mvc.handler.ResponseJsonHandler;
+import com.liuqi.vanasframework.core.mvc.res.DataResult;
 import com.liuqi.vanasframework.core.mvc.res.PageDataResult;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
@@ -29,6 +31,10 @@ import java.util.Map;
  */
 public class BaseController {
 
+    protected Map<String, Object> renderJSON(DataResult result){
+        return ResponseJsonHandler.getInstance().renderJSON(result);
+    }
+
     /**
      * 返回 layui table 的数据类型
      * @param res 分页查询返回值 {@link PageDataResult}
@@ -44,11 +50,13 @@ public class BaseController {
     }
 
     /**
-     * 重定向到指定路径
+     * 重定向到指定路径,【不建议使用方法】
+     *
      * @param redirectUrl <b>不能为空</b>。<br>
      *                   <b>比如:</b> <br>
      *                   /user/list <br> /user/info/1 <br> /user/info?id=1&amp;name=admin;
      * @return 重定向的路径
+     * @deprecated 返回字符串会被异常处理拦截为返回 json 对象，如果返回的是视图。建议使用 {@link #redirect}
      */
     protected String redirectURL(String redirectUrl){
         return "redirect:"+redirectUrl;

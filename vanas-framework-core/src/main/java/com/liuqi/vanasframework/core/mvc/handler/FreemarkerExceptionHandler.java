@@ -27,6 +27,6 @@ public class FreemarkerExceptionHandler implements TemplateExceptionHandler {
         log.error("[出错了，请联系网站管理员]", e);
 
         // 抛出异常，由 springboot 接管统一处理
-        throw new TemplateException(environment);
+        throw e;
     }
 }
