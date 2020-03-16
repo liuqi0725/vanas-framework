@@ -1,4 +1,4 @@
-package com.liuqi.vanasframework.security.filter;
+package com.liuqi.vanasframework.security.access;
 
 import org.springframework.security.access.AccessDecisionManager;
 import org.springframework.security.access.AccessDeniedException;

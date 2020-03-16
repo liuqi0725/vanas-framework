@@ -1,6 +1,5 @@
-package com.liuqi.vanasframework.security;
+package com.liuqi.vanasframework.security.util;
 
-import com.liuqi.vanasframework.security.entity.SecurityUser;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;

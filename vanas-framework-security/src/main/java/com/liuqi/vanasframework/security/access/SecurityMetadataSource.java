@@ -1,7 +1,7 @@
-package com.liuqi.vanasframework.security.service;
+package com.liuqi.vanasframework.security.access;
 
-import com.liuqi.vanasframework.security.access.VanasSecurityDataSourceAdapter;
 import com.liuqi.vanasframework.security.entity.SecurityPermission;
+import com.liuqi.vanasframework.security.service.VanasSecurityDaoService;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.access.SecurityConfig;
 import org.springframework.security.web.FilterInvocation;
@@ -19,11 +19,6 @@ import java.util.Map;
  * 类说明 <br>
  *     自定义过滤规则,将用户request请求的url 与数据库权限进行，
  *     有匹配则将该 url 及 url所需要的权限 返回给 decide()【决策】方法，不存在则返回空
- * <p>
- *
- *
- *
- *
  *
  * @author : alexliu
  * @version v1.0 , Create at 7:56 PM 2020/3/2
@@ -32,15 +27,15 @@ public class SecurityMetadataSource implements FilterInvocationSecurityMetadataS
 
     private Map<AntPathRequestMatcher,Collection<ConfigAttribute>> permissionMap;
 
-    private VanasSecurityDataSourceAdapter vanasSecurityAdapter;
+    private VanasSecurityDaoService vanasSecurityAdapter;
 
-    public SecurityMetadataSource(VanasSecurityDataSourceAdapter vanasSecurityAdapter){
+    public SecurityMetadataSource(VanasSecurityDaoService vanasSecurityAdapter){
         Assert.notNull(vanasSecurityAdapter,"an vanasSecurityAdapter is require!");
         this.vanasSecurityAdapter = vanasSecurityAdapter;
     }
 
     private void loadPermissionMap(){
-        List<? extends SecurityPermission> list = vanasSecurityAdapter.getSecurityFilterNeedPermissions();
+        List<? extends SecurityPermission> list = vanasSecurityAdapter.getAllPermission();
 
         permissionMap = new HashMap<>();
         for(SecurityPermission p : list){

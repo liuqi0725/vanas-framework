@@ -1,10 +1,14 @@
-package com.liuqi.vanasframework.security.filter;
+package com.liuqi.vanasframework.security.authentication;
 
+import com.liuqi.vanasframework.security.entity.VanasSecurityConfigSource;
+import lombok.extern.log4j.Log4j2;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationServiceException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
+import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
+import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import javax.servlet.ServletException;
@@ -14,31 +18,42 @@ import java.io.IOException;
 
 /**
  * 类说明 <br>
- *  用用户名，账号密码登陆
+ *  自定义样式认证登陆的过滤器
  *
  * @author : alexliu
  * @version v1.0 , Create at 1:59 PM 2020/3/10
  */
-public class UsernameVcidAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
+@Log4j2
+public class VanasUserLoginAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
 
     private static final String SPRING_SECURITY_FORM_USERNAME_KEY = "username";
     private static final String SPRING_SECURITY_FORM_PASSWORD_KEY = "password";
     private static final String SPRING_SECURITY_FORM_VCID_KEY = "vcid";
-
-    private static final String USERNAME_LOGINID_SPLIT = "|";
 
     private String usernameParameter = SPRING_SECURITY_FORM_USERNAME_KEY;
     private String passwordParameter = SPRING_SECURITY_FORM_PASSWORD_KEY;
     private String vcidParameter = SPRING_SECURITY_FORM_VCID_KEY;
     private boolean postOnly = true;
 
-    public UsernameVcidAuthenticationFilter() {
-        super("/login");
+    public VanasUserLoginAuthenticationFilter() {
+        super(new AntPathRequestMatcher(VanasSecurityConfigSource.getInstance().getLoginURL(),HttpMethod.POST.name()));
+        SimpleUrlAuthenticationFailureHandler failedHandler =
+                (SimpleUrlAuthenticationFailureHandler)getFailureHandler();
+        failedHandler.setDefaultFailureUrl(VanasSecurityConfigSource.getInstance().getLoginErrorURL());
+
+        SimpleUrlAuthenticationSuccessHandler successHandler =
+                (SimpleUrlAuthenticationSuccessHandler)getSuccessHandler();
+        successHandler.setDefaultTargetUrl(VanasSecurityConfigSource.getInstance().getLoginSuccessURL());
+
+        log.info("VanasUserLoginAuthenticationFilter loading ...");
+
     }
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException, ServletException {
-        if (postOnly && !request.getMethod().equals("POST")) {
+
+        // 只允许 /login 为 post 的的请求进入
+        if (postOnly && !request.getMethod().equals(HttpMethod.POST.name())) {
             throw new AuthenticationServiceException(
                     "Authentication method not supported: " + request.getMethod());
         }
@@ -63,12 +78,13 @@ public class UsernameVcidAuthenticationFilter extends AbstractAuthenticationProc
         password = password.trim();
         vcid = vcid.trim();
 
-        username = vcid + USERNAME_LOGINID_SPLIT + username; // vcid 与 username 链接
+//        username = vcid + USERNAME_LOGINID_SPLIT + username; // vcid 与 username 链接
 
         //主要通过这个token来决定使用哪个userDetailService.
         //UserDetailsAuthenticationProvider里面有个supports方法,主要用来验证指定的token是否符合.
         //可以通过指定不同类型的token来决定使用哪个userDetailService.
-        UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(username, password);
+        VanasUserLoginAuthenticationToken authRequest = new VanasUserLoginAuthenticationToken(username,password,vcid);
+        // 设置身份验证详情
         setDetails(request, authRequest);
         return this.getAuthenticationManager().authenticate(authRequest);
     }
@@ -113,7 +129,7 @@ public class UsernameVcidAuthenticationFilter extends AbstractAuthenticationProc
      * @param request that an authentication request is being created for
      * @param authRequest the authentication request object that should have its details set
      */
-    protected void setDetails(HttpServletRequest request, UsernamePasswordAuthenticationToken authRequest) {
+    protected void setDetails(HttpServletRequest request, VanasUserLoginAuthenticationToken authRequest) {
         authRequest.setDetails(authenticationDetailsSource.buildDetails(request));
     }
 
