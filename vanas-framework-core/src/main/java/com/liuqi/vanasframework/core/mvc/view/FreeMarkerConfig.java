@@ -6,8 +6,6 @@ import cn.org.rapid_framework.freemarker.directive.ExtendsDirective;
 import cn.org.rapid_framework.freemarker.directive.OverrideDirective;
 import cn.org.rapid_framework.freemarker.directive.SuperDirective;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver;
 
@@ -31,11 +29,14 @@ public class FreeMarkerConfig implements Serializable{
 
     private static final long serialVersionUID = 7225569316034483810L;
 
-    @Autowired
     private freemarker.template.Configuration configuration;
 
-    @Autowired
-    protected FreeMarkerViewResolver freeMarkerViewResolver;
+    private FreeMarkerViewResolver freeMarkerViewResolver;
+
+    public FreeMarkerConfig(freemarker.template.Configuration configuration , FreeMarkerViewResolver freeMarkerViewResolver){
+        this.configuration = configuration;
+        this.freeMarkerViewResolver = freeMarkerViewResolver;
+    }
 
     public void setFreeMarkConf(Map<String,String> staticClass){
 

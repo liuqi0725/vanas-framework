@@ -29,4 +29,10 @@ public interface VanasPasswordVoter {
      */
     public boolean matches(CharSequence password, String encodedPassword);
 
+    /**
+     * 开启或关闭自定义验证
+     * @return 是否开启 默认 false
+     */
+    public boolean enabled();
+
 }

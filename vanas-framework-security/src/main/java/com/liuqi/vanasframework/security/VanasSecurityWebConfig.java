@@ -1,5 +1,6 @@
 package com.liuqi.vanasframework.security;
 
+import com.liuqi.vanasframework.core.Vanas;
 import com.liuqi.vanasframework.security.authentication.VanasUserLoginAuthenticationFilter;
 import com.liuqi.vanasframework.security.authentication.VanasUserLoginAuthenticationProvider;
 import com.liuqi.vanasframework.security.access.SecurityDecisionManager;
@@ -34,42 +35,54 @@ import java.util.Collections;
 @Log4j2
 public class VanasSecurityWebConfig extends WebSecurityConfigurerAdapter {
 
-    public VanasSecurityWebConfig(VanasSecurityConfig vanasSecurityConfig){
-        // 转化为 security 的配置常量
-        VanasSecurityConfigSource.getInstance().init(vanasSecurityConfig);
-    }
+//    @Autowired
+//    public void setVanasSecurityDaoService(VanasSecurityDaoService vanasSecurityDaoService) {
+//        VanasSecurityConfigSource.getInstance().setCustomerDaoService(vanasSecurityDaoService);
+//    }
+//
+//    @Autowired
+//    public void setPasswordVoter(VanasPasswordVoter passwordVoter) {
+//        VanasSecurityConfigSource.getInstance().setCustomerPasswordEncoder(passwordVoter);
+//    }
+
+//    public VanasSecurityWebConfig(VanasSecurityConfig vanasSecurityConfig){
+//        // 转化为 security 的配置常量
+//        VanasSecurityConfigSource.getInstance().init(vanasSecurityConfig);
+//    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
-        Assert.notNull(VanasSecurityConfigSource.getInstance().getPermitURL(),"the PermitURL is require");
+        // 转化为 security 的配置常量
+
+        Assert.notNull(Vanas.customerConfig.getPermitUrl(),"the PermitURL is require");
 
         http.addFilterAfter(getInterceptor(), FilterSecurityInterceptor.class);
 
         http.addFilterAt(getUserLoginAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 
         http.authorizeRequests()
-                .antMatchers(VanasSecurityConfigSource.getInstance().getPermitURL()).permitAll()
+                .antMatchers(Vanas.customerConfig.getPermitUrl()).permitAll()
                 .anyRequest().authenticated() // 其他地址的访问均需验证权限
                 .and()
                 .formLogin()
-                .loginPage(VanasSecurityConfigSource.getInstance().getLoginURL())
-                .loginProcessingUrl(VanasSecurityConfigSource.getInstance().getLoginFormURL())       // 登录action 提交的值
-                .defaultSuccessUrl(VanasSecurityConfigSource.getInstance().getLoginSuccessURL())     // 登录成功页面
-                .failureUrl(VanasSecurityConfigSource.getInstance().getLoginErrorURL()).permitAll();
+                .loginPage(Vanas.customerConfig.getLoginUrl())
+                .loginProcessingUrl(Vanas.customerConfig.getLoginFormUrl())       // 登录action 提交的值
+                .defaultSuccessUrl(Vanas.customerConfig.getLoginSuccessUrl())     // 登录成功页面
+                .failureUrl(Vanas.customerConfig.getLoginFailureUrl()).permitAll();
 
-        if(!VanasSecurityConfigSource.getInstance().isCloseCookie()){
-            http.rememberMe().tokenValiditySeconds(VanasSecurityConfigSource.getInstance().getCookieValidSeconds());
+        if(!Vanas.customerConfig.isCookieEnabled()){
+            http.rememberMe().tokenValiditySeconds(Vanas.customerConfig.getCookieValidSeconds());
         }
 
-        if(VanasSecurityConfigSource.getInstance().isCloseCsrf()){
+        if(!Vanas.customerConfig.isCsrfEnabled()){
             http.csrf().disable();
         }else{
             // 不关闭 csrf  开启 druid csrf 过滤
-            http.csrf().ignoringAntMatchers(VanasSecurityConfigSource.getInstance().getCsrfIgnoringURL());
+            http.csrf().ignoringAntMatchers(Vanas.customerConfig.getCsrfPermitUrl());
         }
 
-        http.logout().permitAll().logoutSuccessUrl(VanasSecurityConfigSource.getInstance().getLoginOutSuccessURL());    // 退出登录成功页面
+        http.logout().permitAll().logoutSuccessUrl(Vanas.customerConfig.getLoginOutSuccessUrl());    // 退出登录成功页面
     }
 
     /**

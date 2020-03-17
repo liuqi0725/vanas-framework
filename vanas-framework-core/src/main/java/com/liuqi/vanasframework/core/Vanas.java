@@ -1,6 +1,7 @@
 package com.liuqi.vanasframework.core;
 
 
+import com.liuqi.vanasframework.core.conf.VanasCustomerConfig;
 import org.springframework.cache.jcache.JCacheCacheManager;
 import org.springframework.context.ApplicationContext;
 
@@ -16,5 +17,7 @@ public class Vanas {
     public static ApplicationContext SpringContext;
 
     public static JCacheCacheManager cacheManager;
+
+    public static VanasCustomerConfig customerConfig;
 
 }

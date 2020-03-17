@@ -1,6 +1,6 @@
 package com.liuqi.vanasframework.security.authentication;
 
-import com.liuqi.vanasframework.security.entity.VanasSecurityConfigSource;
+import com.liuqi.vanasframework.core.Vanas;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationServiceException;
@@ -36,14 +36,14 @@ public class VanasUserLoginAuthenticationFilter extends AbstractAuthenticationPr
     private boolean postOnly = true;
 
     public VanasUserLoginAuthenticationFilter() {
-        super(new AntPathRequestMatcher(VanasSecurityConfigSource.getInstance().getLoginURL(),HttpMethod.POST.name()));
+        super(new AntPathRequestMatcher(Vanas.customerConfig.getLoginUrl(),HttpMethod.POST.name()));
         SimpleUrlAuthenticationFailureHandler failedHandler =
                 (SimpleUrlAuthenticationFailureHandler)getFailureHandler();
-        failedHandler.setDefaultFailureUrl(VanasSecurityConfigSource.getInstance().getLoginErrorURL());
+        failedHandler.setDefaultFailureUrl(Vanas.customerConfig.getLoginFailureUrl());
 
         SimpleUrlAuthenticationSuccessHandler successHandler =
                 (SimpleUrlAuthenticationSuccessHandler)getSuccessHandler();
-        successHandler.setDefaultTargetUrl(VanasSecurityConfigSource.getInstance().getLoginSuccessURL());
+        successHandler.setDefaultTargetUrl(Vanas.customerConfig.getLoginSuccessUrl());
 
         log.info("VanasUserLoginAuthenticationFilter loading ...");
 

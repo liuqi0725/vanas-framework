@@ -2,6 +2,7 @@ package com.liuqi.vanasframework.security.service;
 
 import com.liuqi.vanasframework.security.entity.SecurityPermission;
 import com.liuqi.vanasframework.security.entity.SecurityUser;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.List;
 
@@ -19,4 +20,6 @@ public interface VanasSecurityDaoService {
     SecurityUser loadUserByUsername(String userName);
 
     SecurityUser loadUserByUsername(String userName,String vcid);
+
+    SecurityUser getUserAuthorities(SecurityUser user);
 }
