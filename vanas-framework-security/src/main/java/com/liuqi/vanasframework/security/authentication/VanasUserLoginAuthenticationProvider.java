@@ -1,11 +1,13 @@
 package com.liuqi.vanasframework.security.authentication;
 
 import com.liuqi.vanasframework.core.Vanas;
-import com.liuqi.vanasframework.core.exception.AppSecurityException;
+import com.liuqi.vanasframework.security.ex.BadLoginError;
+import com.liuqi.vanasframework.security.ex.BadLoginException;
 import com.liuqi.vanasframework.security.entity.SecurityUser;
 import com.liuqi.vanasframework.security.entity.VanasSecurityConfigSource;
 import com.liuqi.vanasframework.security.service.VanasSecurityDaoService;
 import lombok.extern.log4j.Log4j2;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
@@ -57,7 +59,7 @@ public class VanasUserLoginAuthenticationProvider implements AuthenticationProvi
             }else{
                 user = daoService.loadUserByUsername((String) authenticationToken.getPrincipal());
             }
-        }catch (AppSecurityException e){
+        }catch (Exception e){
             throw new BadCredentialsException("系统异常，请稍后再试。");
         }
 
@@ -70,8 +72,6 @@ public class VanasUserLoginAuthenticationProvider implements AuthenticationProvi
         String inputPassoword = authenticationToken.getCredentials().toString();
 
         if(!passwordEncoder.matches(inputPassoword , user.getPassword())){
-            log.debug("Authentication failed: password does not match stored value");
-
             throw new BadCredentialsException("密码错误。");
         }
 
@@ -80,8 +80,19 @@ public class VanasUserLoginAuthenticationProvider implements AuthenticationProvi
         UserDetails userDetails = null;
         try {
             userDetails = daoService.getUserAuthorities(user);
-        }catch (AppSecurityException e){
-            throw new BadCredentialsException("获取用户权限错误，请稍后再试。");
+        }catch (Exception e){
+            String msg = "";
+            if(e instanceof BadLoginException){
+                // 用户级错误
+                msg = e.getMessage();
+            }else if(e instanceof BadLoginError){
+                // 系统级错误
+                msg = "获取用户权限错误，请稍后再试。";
+            }else{
+                msg = "系统异常，请联系管理员";
+            }
+
+            throw new BadCredentialsException(msg , e);
         }
 
         //通过

@@ -7,11 +7,7 @@ import java.util.List;
 
 /**
  * 类说明 <br>
- * <p>
- * 构造说明 :
- * <pre>
- *
- * </pre>
+ *     注解工具，用于查找带指定注解的类、方法、属性
  *
  * @author : alexliu
  * @version v1.0 , Create at 10:39 PM 2020/2/27
