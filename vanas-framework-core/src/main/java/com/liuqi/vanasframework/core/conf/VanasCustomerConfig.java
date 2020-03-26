@@ -12,11 +12,7 @@ import java.util.List;
 
 /**
  * 类说明 <br>
- * <p>
- * 构造说明 :
- * <pre>
- *
- * </pre>
+ *     用户自定义准字行
  *
  * @author : alexliu
  * @version v1.0 , Create at 09:41 2020-03-17

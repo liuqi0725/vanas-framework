@@ -1,5 +1,6 @@
 package com.liuqi.vanasframework.security.entity;
 
+import com.liuqi.vanasframework.core.mvc.entity.PageBean;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,7 +20,7 @@ import java.util.List;
  * @author : alexliu
  * @version v1.0 , Create at 11:37 PM 2020/3/1
  */
-public abstract class SecurityUser implements UserDetails {
+public abstract class SecurityUser extends PageBean implements UserDetails {
 
     protected String username;
 
@@ -30,6 +31,8 @@ public abstract class SecurityUser implements UserDetails {
     protected boolean isSuperAdmin;
 
     protected Collection<? extends GrantedAuthority> authorities;
+
+    protected Collection<? extends SecurityPermission> permissions;
 
 
     public List<Integer> getRoleIds() {
@@ -51,29 +54,43 @@ public abstract class SecurityUser implements UserDetails {
     public void setAuthorities(List<SecurityPermission> authorities) {
 
         List<SimpleGrantedAuthority> list = new ArrayList<>();
+        List<SecurityPermission> pList = new ArrayList<>();
+
         for(SecurityPermission p : authorities) {
             list.add(new SimpleGrantedAuthority(p.getUnKey()));
+            pList.add(p);
         }
+        this.permissions = pList;
         this.authorities = list;
     }
 
     @SuppressWarnings("unchecked")
     public void setAuthorities(SecurityPermission permission) {
         List<SimpleGrantedAuthority> list;
+        List<SecurityPermission> pList;
+
         if(getAuthorities() == null){
             list = new ArrayList<>();
+            pList = new ArrayList<>();
         }else{
             list = (List<SimpleGrantedAuthority>)getAuthorities();
+            pList = (List<SecurityPermission>)getPermission();
         }
         SimpleGrantedAuthority auth = new SimpleGrantedAuthority(permission.getUnKey());
         list.add(auth);
+        pList.add(permission);
 
-        authorities = list;
+        this.authorities = list;
+        this.permissions = pList;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return this.authorities;
+    }
+
+    public Collection<? extends SecurityPermission> getPermission(){
+        return permissions;
     }
 
     public void setUsername(String username) {

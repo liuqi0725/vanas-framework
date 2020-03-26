@@ -1,5 +1,6 @@
 package com.liuqi.vanasframework.security.access;
 
+import com.liuqi.vanasframework.util.WebUtils;
 import org.springframework.security.access.AccessDecisionManager;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.ConfigAttribute;
@@ -26,6 +27,9 @@ import java.util.Collection;
  */
 public class SecurityDecisionManager implements AccessDecisionManager{
 
+
+    private static final String CURRENT_AUTHENTICATION_ATTR = "CURRENT_AUTHENTICATION_ATTR";
+
     /**
      * @param authentication        UserDetailService 中 用户登录后获取到的权限列表
      * @param o                     包含客户端发起的请求的request信息，可以转换为HttpServletRequest
@@ -51,6 +55,8 @@ public class SecurityDecisionManager implements AccessDecisionManager{
             //遍历当前登录用户的权限，查看是否有该权限
             for (GrantedAuthority grantedAuthority : authentication.getAuthorities()) {
                 if (attr.equals(grantedAuthority.getAuthority())){
+                    // 记录当前访问权限在 session
+                    WebUtils.setSessionAttribute(CURRENT_AUTHENTICATION_ATTR ,attr);
                     return;
                 }
             }

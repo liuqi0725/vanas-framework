@@ -47,6 +47,10 @@ public class SaveLogAspect {
      */
     private VanasSaveLogAdapter adapter = null;
 
+    public SaveLogAspect(VanasSaveLogAdapter adapter){
+        this.adapter = adapter;
+    }
+
     /**
      * 定义切点为所有使用 SummerLog 注解的时候
      */
@@ -115,10 +119,6 @@ public class SaveLogAspect {
 
         adapter.saveLog( targetClassName, methodName , operationType , operationDesc , object);
 
-    }
-
-    public void setAdapter(VanasSaveLogAdapter adapter) {
-        this.adapter = adapter;
     }
 
 }

@@ -66,7 +66,7 @@ public class WebUtils {
      */
     public static void setSessionAttribute(String key , Object data) {
         HttpServletRequest request = getRequest();
-        request.getSession().setAttribute(getSessionAttributeKey(key), data);
+        request.getSession().setAttribute(key, data);
     }
 
     /**
@@ -77,7 +77,7 @@ public class WebUtils {
     public static void setSessionAttribute(Enum<?> key , Object data) {
         HttpServletRequest request = getRequest();
         String keyStr = key.name() + key.hashCode();
-        request.getSession().setAttribute(getSessionAttributeKey(keyStr), data);
+        request.getSession().setAttribute(key.name(), data);
     }
 
     /**
@@ -87,7 +87,7 @@ public class WebUtils {
      */
     public static Object getSessionAttribute(String key) {
         HttpServletRequest request = getRequest();
-        return request.getSession().getAttribute(getSessionAttributeKey(key));
+        return request.getSession().getAttribute(key);
     }
 
     /**
@@ -98,7 +98,7 @@ public class WebUtils {
     public static Object getSessionAttribute(Enum<?> key) {
         HttpServletRequest request = getRequest();
         String keyStr = key.name() + key.hashCode();
-        return request.getSession().getAttribute(getSessionAttributeKey(keyStr));
+        return request.getSession().getAttribute(key.name());
     }
 
     /**

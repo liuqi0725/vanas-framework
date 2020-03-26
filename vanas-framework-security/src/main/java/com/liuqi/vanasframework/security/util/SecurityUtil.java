@@ -19,15 +19,24 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
  */
 public class SecurityUtil {
 
-    private static BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-
     /**
      * 用 spring-security BCryptPasswordEncoder 加密密码
      * @param var1 密码
      * @return 加密后的密码
      */
     public static String encode(String var1){
-        return bCryptPasswordEncoder.encode(var1);
+        BCryptPasswordEncoder bcr = new BCryptPasswordEncoder();
+        return bcr.encode(var1);
+    }
+
+    /**
+     * 用 spring-security BCryptPasswordEncoder 加密密码
+     * @param var1 密码
+     * @return 加密后的密码
+     */
+    public static boolean matches(String var1 , String var2){
+        BCryptPasswordEncoder bcr = new BCryptPasswordEncoder();
+        return bcr.matches(var1, var2);
     }
 
     /**

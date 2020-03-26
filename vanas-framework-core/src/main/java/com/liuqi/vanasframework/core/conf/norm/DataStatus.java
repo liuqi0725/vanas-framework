@@ -26,14 +26,21 @@ public class DataStatus {
      */
     public static final Integer STATUS_DELETE = 99;
 
+    /**
+     * 数据库配置状态-完结 default value is 100
+     */
+    public static final Integer STATUS_OVER = 100;
+
+
+
 
     /**
-     * 数据库配置状态-是 default value is 1
+     * 是否值的状态值 ： 是 default value is 1
      */
-    public static final Integer STATUS_YES = 1;
+    public static final Integer BOOLEAN_STATUS_YES = 1;
 
     /**
-     * 数据库配置状态-否 default value is 0
+     * 是否值的状态值 ： 否 default value is 1
      */
-    public static final Integer STATUS_NO = 0;
+    public static final Integer BOOLEAN_STATUS_NO = 0;
 }
