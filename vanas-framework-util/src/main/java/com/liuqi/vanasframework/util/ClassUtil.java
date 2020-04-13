@@ -34,6 +34,11 @@ public class ClassUtil {
     private char PACKAGE_PATH_SEPARATOR = '/';
 
     /**
+     * classLoder 默认为当前类的 classLoader
+     */
+    private ClassLoader classLoader = this.getClass().getClassLoader();
+
+    /**
      * 类的协议
      */
     private String CLASS_PROTOCOL = "file";
@@ -46,6 +51,10 @@ public class ClassUtil {
 
     private static class ClassUtilHook {
         private static ClassUtil instance = new ClassUtil();
+    }
+
+    public void setClassLoader(ClassLoader classLoader){
+        this.classLoader = classLoader;
     }
 
     /**
@@ -152,6 +161,7 @@ public class ClassUtil {
         String className;
         String tempPackageName;
         Class targetClass;
+
         for(File f : files){
 
             if(f.isDirectory()){
@@ -160,15 +170,20 @@ public class ClassUtil {
             }else{
                 className = f.getName().substring(0 , f.getName().length() - CLASS_FILE_SUFFIX.length());
 
-                targetClass = Class.forName(packageName + "." + className);
+                // 转化 classLoader ，封装成 jar 包后 ，外部调用 jar 类函数。
+                // 可能会 classLoader 不一致。不同的 classLoader 会导致自定义注解不适配
+                // 重新将注解类 用当前类 classLoader 加载，保证 classLoader 一致
+                targetClass = classLoader.loadClass(packageName + "." + className);
+//                targetClass = Class.forName(packageName + "." + className);
 
                 if(annotationClass == null){
                     classes.add(targetClass);
                 }else{
+                    annotationClass = classLoader.loadClass(annotationClass.getName());
                     // 判断是否有该注释
                     Annotation annotation = targetClass.getAnnotation(annotationClass);
                     if(annotation != null){
-                        classes.add(Class.forName(packageName + "." + className));
+                        classes.add(targetClass);
                     }
                 }
 
