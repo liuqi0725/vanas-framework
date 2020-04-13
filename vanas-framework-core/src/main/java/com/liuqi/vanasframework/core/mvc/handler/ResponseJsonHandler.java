@@ -168,7 +168,7 @@ public class ResponseJsonHandler implements Serializable{
 
         map.put(ATTR_SUCCESS , result.getStatus());
 
-        if(success){
+        if(result.getStatus()){
             map.put(ATTR_DATA , result.getData());
         }else{
             map.put(ATTR_ERRORINFO , null);
