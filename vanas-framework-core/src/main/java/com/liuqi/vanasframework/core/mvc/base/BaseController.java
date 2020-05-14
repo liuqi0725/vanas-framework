@@ -4,16 +4,10 @@ import com.liuqi.vanasframework.core.conf.norm.ResultStatus;
 import com.liuqi.vanasframework.core.mvc.handler.ResponseJsonHandler;
 import com.liuqi.vanasframework.core.mvc.res.DataResult;
 import com.liuqi.vanasframework.core.mvc.res.PageDataResult;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.propertyeditors.CustomDateEditor;
-import org.springframework.beans.propertyeditors.CustomNumberEditor;
-import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
+import com.liuqi.vanasframework.core.tuple.ex.RequestMsgResultTuple;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributesModelMap;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,8 +23,38 @@ import java.util.Map;
  * @author : alexliu
  * @version v1.0 , Create at 10:32 AM 2019/4/26
  */
-public class BaseController {
+public class BaseController extends AbstractController{
 
+    /**
+     * 返回成功的 json 消息
+     * <p>
+     *     成功的 rest 请求可以快速返回成功的消息。<br>
+     *     失败的，必须带有错误信息，请使用 <br>
+     *         {@link #renderJSON(DataResult)} <br>
+     *         {@link #renderJSONError(String)} <br>
+     * </p>
+     * @return Map 对象
+     */
+    protected Map<String, Object> renderJSONSuccess(){
+        return ResponseJsonHandler.getInstance().renderJSON(new DataResult());
+    }
+
+    /**
+     * 返回 json 消息
+     * @param msg 错误消息
+     * @return Map 对象
+     */
+    protected Map<String, Object> renderJSONError(String msg){
+        DataResult result = new DataResult();
+        result.error(msg);
+        return ResponseJsonHandler.getInstance().renderJSON(result);
+    }
+
+    /**
+     * 返回 json 消息
+     * @param result {@link DataResult} 返回对象
+     * @return Map 对象
+     */
     protected Map<String, Object> renderJSON(DataResult result){
         return ResponseJsonHandler.getInstance().renderJSON(result);
     }
@@ -62,91 +86,56 @@ public class BaseController {
         return "redirect:"+redirectUrl;
     }
 
-    /**
-     * 重定向到指定路径
-     * @param params 例如 /test/getUser
-     *        支持如下类型参数:<br>
-     *        <ul>
-     *               <li>{@link ModelAndView} 如果不传，由方法内部新建。</li>
-     *               <li>{@link String} redirectUrl <b>不能为空</b>。<br>
-     *                   <b>比如:</b> <br>
-     *                   /user/list <br> /user/info/1 <br> /user/info?id=1&amp;name=admin;
-     *               </li>
-     *        </ul>
-     * @return {@link ModelAndView}
-     */
-    protected ModelAndView redirect(Object... params){
 
-        ModelAndView mv = null;
-        String redirectUrl = "";
-
-        for(Object o : params){
-            if(o instanceof ModelAndView){
-                mv = (ModelAndView)o;
-            }else if(o instanceof String){
-                redirectUrl = (String)o;
-            }else{
-                throw new RuntimeException("The params Only support [ModelAndView] , [String] Type. but ["+o.getClass().getName()+"] given." );
-            }
-        }
-
-        if(StringUtils.isEmpty(redirectUrl)){
-            throw new RuntimeException("Not found redirect URL." );
-        }
-
-        if(mv == null){
-            mv = new ModelAndView();
-        }
-
-        mv.setViewName("redirect:" + redirectUrl);
-
-        return mv;
-    }
 
     /**
-     *
-     * @param model 重定向 map
+     * 设置重定向后的消息
+     * @param model 重定向 map【已废弃】
      * @param msg_type 消息类型 {@link ResultStatus}
      * @param msg spring mvc 返回消息
+     * @deprecated 已废弃，推荐使用{@link #redirect(Object...)}
      */
     protected void setRediectMessage(RedirectAttributesModelMap model, ResultStatus msg_type , String msg){
 
         if(msg_type == ResultStatus.SUCCESS){
-            setRediectSuccessMessage(model,msg);
+            this.setRediectSuccessMessage(model,msg);
         }else if(msg_type == ResultStatus.ERROR){
-            setRediectErrorMessage(model,msg);
+            this.setRediectErrorMessage(model,msg);
         }else if(msg_type == ResultStatus.WARN){
-            setRediectWarnMessage(model,msg);
+            this.setRediectWarnMessage(model,msg);
         }
     }
     /**
-     * 设置跨重定向的 spring mvc 返回消息
+     * 设置跨重定向的 spring mvc 返回消息【已废弃】
      * @param model 重定向 map
      * @param msg 消息
+     * @deprecated 已废弃，推荐使用{@link #redirect(Object...)}
      */
     protected void setRediectErrorMessage(RedirectAttributesModelMap model, String msg){
-        model.addFlashAttribute("msg", msg);
-        model.addFlashAttribute("msg_type", ResultStatus.ERROR);
+        model.addFlashAttribute(RETURN_CLIENT_MSG_KEY_NAME, msg);
+        model.addFlashAttribute(RETURN_CLIENT_MSG_TYPE, ResultStatus.ERROR);
     }
 
     /**
      * 设置跨重定向的 spring mvc 返回消息
      * @param model 重定向 map
      * @param msg 消息
+     * @deprecated 已废弃，推荐使用{@link #redirect(Object...)}
      */
     protected void setRediectSuccessMessage(RedirectAttributesModelMap model, String msg ){
-        model.addFlashAttribute("msg", msg);
-        model.addFlashAttribute("msg_type", ResultStatus.SUCCESS);
+        model.addFlashAttribute(RETURN_CLIENT_MSG_KEY_NAME, msg);
+        model.addFlashAttribute(RETURN_CLIENT_MSG_TYPE, ResultStatus.SUCCESS);
     }
 
     /**
      * 设置跨重定向的 spring mvc 返回消息
      * @param model 重定向 map
      * @param msg 消息
+     * @deprecated 已废弃，推荐使用{@link #redirect(Object...)}
      */
     protected void setRediectWarnMessage(RedirectAttributesModelMap model, String msg){
-        model.addFlashAttribute("msg", msg);
-        model.addFlashAttribute("msg_type", ResultStatus.WARN);
+        model.addFlashAttribute(RETURN_CLIENT_MSG_KEY_NAME, msg);
+        model.addFlashAttribute(RETURN_CLIENT_MSG_TYPE, ResultStatus.WARN);
     }
 
     /**
@@ -154,6 +143,11 @@ public class BaseController {
      * @param mav map
      * @param msg_type 消息类型 {@link ResultStatus}
      * @param msg 消息体
+     * @deprecated 已废弃，推荐使用 <br>
+     *     {@link #forward(ModelAndView, String, Map, RequestMsgResultTuple)} <br>
+     *     {@link #forward(String, RequestMsgResultTuple)}<br>
+     *     {@link #forward(ModelAndView, String, RequestMsgResultTuple)}<br>
+     *     {@link #forward(RequestMsgResultTuple)}<br>
      */
     protected void setForwardSuccessMessage(ModelAndView mav , ResultStatus msg_type , String msg){
 
@@ -170,47 +164,45 @@ public class BaseController {
      * 设置视图 spring mvc 返回消息
      * @param mav map
      * @param msg 消息
+     * @deprecated 已废弃，推荐使用 <br>
+     *     {@link #forward(ModelAndView, String, Map, RequestMsgResultTuple)} <br>
+     *     {@link #forward(String, RequestMsgResultTuple)}<br>
+     *     {@link #forward(ModelAndView, String, RequestMsgResultTuple)}<br>
+     *     {@link #forward(RequestMsgResultTuple)}<br>
      */
     protected void setForwardSuccessMessage(ModelAndView mav , String msg){
-        mav.addObject("msg",msg);
-        mav.addObject("msg_type",ResultStatus.SUCCESS);
+        mav.addObject(RETURN_CLIENT_MSG_KEY_NAME,msg);
+        mav.addObject(RETURN_CLIENT_MSG_TYPE,ResultStatus.SUCCESS);
     }
 
     /**
      * 设置视图 spring mvc 返回消息
      * @param mav map
      * @param msg 消息
+     * @deprecated 已废弃，推荐使用 <br>
+     *     {@link #forward(ModelAndView, String, Map, RequestMsgResultTuple)} <br>
+     *     {@link #forward(String, RequestMsgResultTuple)}<br>
+     *     {@link #forward(ModelAndView, String, RequestMsgResultTuple)}<br>
+     *     {@link #forward(RequestMsgResultTuple)}<br>
      */
     protected void setForwardWarningMessage(ModelAndView mav , String msg){
-        mav.addObject("msg",msg);
-        mav.addObject("msg_type",ResultStatus.WARN);
+        mav.addObject(RETURN_CLIENT_MSG_KEY_NAME,msg);
+        mav.addObject(RETURN_CLIENT_MSG_TYPE,ResultStatus.WARN);
     }
 
     /**
      * 设置视图 spring mvc 返回消息
      * @param mav map
      * @param msg 消息
+     * @deprecated 已废弃，推荐使用 <br>
+     *     {@link #forward(ModelAndView, String, Map, RequestMsgResultTuple)} <br>
+     *     {@link #forward(String, RequestMsgResultTuple)}<br>
+     *     {@link #forward(ModelAndView, String, RequestMsgResultTuple)}<br>
+     *     {@link #forward(RequestMsgResultTuple)}<br>
      */
     protected void setForwardErrorMessage(ModelAndView mav , String msg){
-        mav.addObject("msg",msg);
-        mav.addObject("msg_type",ResultStatus.ERROR);
+        mav.addObject(RETURN_CLIENT_MSG_KEY_NAME,msg);
+        mav.addObject(RETURN_CLIENT_MSG_TYPE,ResultStatus.ERROR);
     }
-
-    /**
-     * 过滤前台直接传 bean 参数处理
-     * @param binder {@link WebDataBinder}
-     */
-    @InitBinder
-    protected void initBinder(WebDataBinder binder) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        dateFormat.setLenient(false);
-
-        //第二个参数是控制是否支持传入的值是空，这个值很关键，如果指定为false，那么如果前台没有传值的话就会报错
-        binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, true));
-        binder.registerCustomEditor(Integer.class, new CustomNumberEditor(Integer.class, true));
-
-    }
-
-
 
 }

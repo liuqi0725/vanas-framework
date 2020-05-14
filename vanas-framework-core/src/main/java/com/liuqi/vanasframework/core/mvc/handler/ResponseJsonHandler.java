@@ -1,8 +1,11 @@
 package com.liuqi.vanasframework.core.mvc.handler;
 
 
+import com.liuqi.vanasframework.core.conf.norm.ExceptionErrorCode;
+import com.liuqi.vanasframework.core.exception.AppException;
 import com.liuqi.vanasframework.core.mvc.entity.ErrorMap;
 import com.liuqi.vanasframework.core.mvc.res.DataResult;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
@@ -117,7 +120,7 @@ public class ResponseJsonHandler implements Serializable{
     }
 
 //    public <T extends Exception> void error(HttpServletRequest request , String errorMsg){
-//        this.error(request,new AppException(errorMsg),ExceptionErrorCode.NORMARL_ERROR);
+//        this.error(request,new AppException(errorMsg),ExceptionErrorCode.SYSTEM_ERROR);
 //    }
 //
 //    public <T extends Exception> void error(HttpServletRequest request , ExceptionErrorCode exceptionErrorCode){
@@ -125,7 +128,7 @@ public class ResponseJsonHandler implements Serializable{
 //    }
 //
 //    public <T extends Exception> void error(HttpServletRequest request , T e ){
-//        this.error(request,e,ExceptionErrorCode.NORMARL_ERROR);
+//        this.error(request,e,ExceptionErrorCode.SYSTEM_ERROR);
 //    }
 //
 //    public <T extends Exception> void error(HttpServletRequest request , T e , ExceptionErrorCode exceptionErrorCode){
@@ -171,7 +174,10 @@ public class ResponseJsonHandler implements Serializable{
         if(result.getStatus()){
             map.put(ATTR_DATA , result.getData());
         }else{
-            map.put(ATTR_ERRORINFO , null);
+            if(StringUtils.isEmpty(result.getMsg())){
+                throw new AppException(ExceptionErrorCode.NULL_ERROR, "返回 json 对象的 msg 为空。当Request 业务出现 Error时，返回消息不能为空。");
+            }
+            map.put(ATTR_ERRORINFO , result.getMsg());
         }
 
         map.put(ATTR_MSG , result.getMsg());

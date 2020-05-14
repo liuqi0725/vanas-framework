@@ -14,14 +14,10 @@ import com.liuqi.vanasframework.core.exception.AppException;
 public class BadPasswordError extends AppException {
 
     public BadPasswordError(String msg) {
-        super(ExceptionErrorCode.NORMARL_ERROR , msg);
+        super(ExceptionErrorCode.SECURITY_ERROR , msg);
     }
 
     public BadPasswordError(String msg , Throwable t) {
-        super(msg, t);
-    }
-
-    public BadPasswordError(Throwable t) {
-        super(t);
+        super(ExceptionErrorCode.SECURITY_ERROR , msg, t);
     }
 }

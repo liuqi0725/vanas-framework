@@ -1,10 +1,5 @@
 package com.liuqi.vanasframework.core.mvc.base;
 
-import org.apache.ibatis.session.SqlSessionFactory;
-import org.mybatis.spring.support.SqlSessionDaoSupport;
-import org.springframework.stereotype.Repository;
-
-import javax.annotation.Resource;
 import java.io.Serializable;
 import java.util.List;
 
@@ -20,8 +15,7 @@ import java.util.List;
  * @author : alexliu
  * @version v1.0 , Create at 9:32 PM 2020/2/19
  */
-@Repository
-public class BaseDao<Entity, PK extends Serializable> extends SqlSessionDaoSupport implements Serializable {
+public class BaseDao<Entity, PK extends Serializable> extends BaseDaoNoDefault<Entity, PK>{
 
     private static final long serialVersionUID = 3674013335380598212L;
 
@@ -42,11 +36,6 @@ public class BaseDao<Entity, PK extends Serializable> extends SqlSessionDaoSuppo
     private final String _SELECT_COUNT_BY_SELECTIVE = ".selectCountSelective";
 
     private final String _SELECT_ALL = ".selectAll";
-
-    @Resource
-    public void setSqlSessionFactory(SqlSessionFactory sqlSessionFactory) {
-        super.setSqlSessionFactory(sqlSessionFactory);
-    }
 
     private String getNameSpace() {
 

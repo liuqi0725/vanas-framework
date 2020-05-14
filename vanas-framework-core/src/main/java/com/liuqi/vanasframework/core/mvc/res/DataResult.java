@@ -1,7 +1,9 @@
 package com.liuqi.vanasframework.core.mvc.res;
 
 
+import com.liuqi.vanasframework.core.conf.norm.ExceptionErrorCode;
 import com.liuqi.vanasframework.core.conf.norm.ResultStatus;
+import com.liuqi.vanasframework.core.exception.AppException;
 import com.liuqi.vanasframework.core.exception.DataResultException;
 
 import java.util.HashMap;
@@ -28,7 +30,7 @@ public class DataResult {
 
     private String msg = "";
 
-    private ResultStatus msg_type = ResultStatus.SUCCESS;
+    private ResultStatus msgType = ResultStatus.SUCCESS;
 
     private Map<String ,Object> data = new HashMap<String , Object>();
 
@@ -40,8 +42,8 @@ public class DataResult {
         return msg;
     }
 
-    public ResultStatus getMsg_type() {
-        return msg_type;
+    public ResultStatus getMsgType() {
+        return msgType;
     }
 
     public Map<String, Object> getData() {
@@ -49,44 +51,61 @@ public class DataResult {
     }
 
     public String getDataAsString (String key){
-        return (String)this.getData().get(key);
+        if(this.data.containsKey(key))
+            return (String)this.getData().get(key);
+        return null;
     }
 
     public boolean getDataAsBoolean (String key){
-        return (boolean)this.getData().get(key);
+        if(this.data.containsKey(key))
+            return (boolean)this.getData().get(key);
+        return false;
     }
 
     public Integer getDataAsInteger (String key){
-        return (Integer)this.getData().get(key);
+        if(this.data.containsKey(key))
+            return (Integer)this.getData().get(key);
+        return null;
     }
 
+    @SuppressWarnings("unchecked")
     public <T> T getDataAsObject (String key , Class<T> classz) {
+
+        if(!this.data.containsKey(key))
+            return null;
 
         Object obj = this.getData().get(key);
 
         // 判断 obj 是否能强转为参数的泛型。不能强转就抛锅。
         if (classz != null && !classz.isInstance(obj)) {
-            throw new RuntimeException("key >> " + key +", get obj >> " + obj.getClass() + " is not " + classz);
+            throw new AppException(ExceptionErrorCode.NOT_SUPPORT_TYPE, "key="+key+"的对象为："+obj.getClass()+" ， 不能转化为：" + classz);
         }
 
-        return (T)obj;
+        return (T) obj;
     }
 
+    @SuppressWarnings("unchecked")
     public <T> List<T> getDataAsList (String key , Class<T> classz) {
+
+        if(!this.data.containsKey(key))
+            return null;
 
         List<Object> objList = (List)this.getData().get(key);
 
         Object obj = objList.get(0);
         // 判断 obj 是否能强转为参数的泛型。不能强转就抛锅。
         if (classz != null && !classz.isInstance(obj)) {
-            throw new RuntimeException("key >> " + key +", get obj >> " + obj.getClass() + " is not " + classz);
+            throw new AppException("key >> " + key +", get obj >> " + obj.getClass() + " is not " + classz);
         }
 
         return (List<T>)objList;
     }
 
-    public Map getDataAsMap (String key) {
-        return (Map)this.getData().get(key);
+    @SuppressWarnings("unchecked")
+    public <K,E> Map<K,E> getDataAsMap (String key) {
+        if(!this.data.containsKey(key))
+            return null;
+        return (Map<K,E>)this.getData().get(key);
     }
 
     public void setData(String key, Object dataVal) {
@@ -115,7 +134,7 @@ public class DataResult {
      */
     public void success(Object ...params) {
         this.status = true;
-        this.msg_type = ResultStatus.SUCCESS;
+        this.msgType = ResultStatus.SUCCESS;
         try {
             setParams(params);
         } catch (DataResultException e) {
@@ -145,7 +164,7 @@ public class DataResult {
      */
     public void warning(Object ...params) {
         this.status = true;
-        this.msg_type = ResultStatus.WARN;
+        this.msgType = ResultStatus.WARN;
         try {
             setParams(params);
         } catch (DataResultException e) {
@@ -175,7 +194,7 @@ public class DataResult {
      */
     public void error(Object ...params) {
         this.status = false;
-        this.msg_type = ResultStatus.ERROR;
+        this.msgType = ResultStatus.ERROR;
         try {
             setParams(params);
         } catch (DataResultException e) {
@@ -186,7 +205,7 @@ public class DataResult {
 
     private void setDefaultParam(String errorMsg){
         this.status = false;
-        this.msg_type = ResultStatus.ERROR;
+        this.msgType = ResultStatus.ERROR;
         this.msg = errorMsg;
     }
 
