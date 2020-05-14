@@ -36,14 +36,14 @@ public class VanasUserLoginAuthenticationFilter extends AbstractAuthenticationPr
     private boolean postOnly = true;
 
     public VanasUserLoginAuthenticationFilter() {
-        super(new AntPathRequestMatcher(Vanas.customerConfig.getLoginUrl(),HttpMethod.POST.name()));
+        super(new AntPathRequestMatcher(Vanas.customerConfig.getSecurity().getLoginUrl(),HttpMethod.POST.name()));
         SimpleUrlAuthenticationFailureHandler failedHandler =
                 (SimpleUrlAuthenticationFailureHandler)getFailureHandler();
-        failedHandler.setDefaultFailureUrl(Vanas.customerConfig.getLoginFailureUrl());
+        failedHandler.setDefaultFailureUrl(Vanas.customerConfig.getSecurity().getLoginFailureUrl());
 
         SimpleUrlAuthenticationSuccessHandler successHandler =
                 (SimpleUrlAuthenticationSuccessHandler)getSuccessHandler();
-        successHandler.setDefaultTargetUrl(Vanas.customerConfig.getLoginSuccessUrl());
+        successHandler.setDefaultTargetUrl(Vanas.customerConfig.getSecurity().getLoginSuccessUrl());
 
         log.info("VanasUserLoginAuthenticationFilter loading ...");
 

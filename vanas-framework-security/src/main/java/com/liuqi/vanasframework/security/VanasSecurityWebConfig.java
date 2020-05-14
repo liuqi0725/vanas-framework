@@ -55,34 +55,34 @@ public class VanasSecurityWebConfig extends WebSecurityConfigurerAdapter {
 
         // 转化为 security 的配置常量
 
-        Assert.notNull(Vanas.customerConfig.getPermitUrl(),"the PermitURL is require");
+        Assert.notNull(Vanas.customerConfig.getSecurity().getPermitUrl(),"the PermitURL is require");
 
         http.addFilterAfter(getInterceptor(), FilterSecurityInterceptor.class);
 
         http.addFilterAt(getUserLoginAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 
         http.authorizeRequests()
-                .antMatchers(Vanas.customerConfig.getPermitUrl()).permitAll()
+                .antMatchers(Vanas.customerConfig.getSecurity().getPermitUrl()).permitAll()
                 .anyRequest().authenticated() // 其他地址的访问均需验证权限
                 .and()
                 .formLogin()
-                .loginPage(Vanas.customerConfig.getLoginUrl())
-                .loginProcessingUrl(Vanas.customerConfig.getLoginFormUrl())       // 登录action 提交的值
-                .defaultSuccessUrl(Vanas.customerConfig.getLoginSuccessUrl())     // 登录成功页面
-                .failureUrl(Vanas.customerConfig.getLoginFailureUrl()).permitAll();
+                .loginPage(Vanas.customerConfig.getSecurity().getLoginUrl())
+                .loginProcessingUrl(Vanas.customerConfig.getSecurity().getLoginFormUrl())       // 登录action 提交的值
+                .defaultSuccessUrl(Vanas.customerConfig.getSecurity().getLoginSuccessUrl())     // 登录成功页面
+                .failureUrl(Vanas.customerConfig.getSecurity().getLoginFailureUrl()).permitAll();
 
-        if(!Vanas.customerConfig.isCookieEnabled()){
-            http.rememberMe().tokenValiditySeconds(Vanas.customerConfig.getCookieValidSeconds());
+        if(!Vanas.customerConfig.getSecurity().isCookieEnabled()){
+            http.rememberMe().tokenValiditySeconds(Vanas.customerConfig.getSecurity().getCookieValidSeconds());
         }
 
-        if(!Vanas.customerConfig.isCsrfEnabled()){
+        if(!Vanas.customerConfig.getSecurity().isCsrfEnabled()){
             http.csrf().disable();
         }else{
             // 不关闭 csrf  开启 druid csrf 过滤
-            http.csrf().ignoringAntMatchers(Vanas.customerConfig.getCsrfPermitUrl());
+            http.csrf().ignoringAntMatchers(Vanas.customerConfig.getSecurity().getCsrfPermitUrl());
         }
 
-        http.logout().permitAll().logoutSuccessUrl(Vanas.customerConfig.getLoginOutSuccessUrl());    // 退出登录成功页面
+        http.logout().permitAll().logoutSuccessUrl(Vanas.customerConfig.getSecurity().getLoginOutSuccessUrl());    // 退出登录成功页面
     }
 
     /**
