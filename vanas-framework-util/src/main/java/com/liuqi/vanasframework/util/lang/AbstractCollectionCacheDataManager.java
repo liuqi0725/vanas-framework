@@ -44,7 +44,7 @@ public abstract class AbstractCollectionCacheDataManager<E> implements Collectio
             return false;
         }
 
-        return o == null;
+        return o != null;
     }
 
     @Override

@@ -2,7 +2,6 @@ package com.liuqi.vanasframework.core.conf;
 
 import lombok.Data;
 import org.apache.commons.lang.StringUtils;
-import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
 import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
@@ -20,6 +19,29 @@ import java.util.List;
 public class VanasSecurityConfig implements Serializable {
 
     private static final long serialVersionUID = 2821054520945565401L;
+
+    /**
+     * 是否允许嵌套 frame
+     */
+    private Boolean xFrameEnabled = Boolean.FALSE;
+
+    /**
+     * iframe 允许显示的方式，当 xFrameAllow = true 时生效 <br>
+     * SAMEORIGIN 仅允许 frame 页面当前域名下的显示 <br>
+     *
+     * FROMURI 允许 frame 页面在指定域名下显示 <br>
+     *     例如：
+     *     <ul>
+     *          <li>http://www.baidu.com 允许该域名可以嵌套我的 frame</li>
+     *          <li>http://www.taobao.com 允许该域名可以嵌套我的 frame</li>
+     *     </ul>
+     */
+    private String xFrameOptions = "SAMEORIGIN";
+
+    /**
+     * 允许显示 frame 的域名地址 ,当 xFrameAllow = true  ， xFrameOptions = FROMURI 时生效
+     */
+    private String[] xFrameAllowUri;
 
     /**
      * 白名单 "," 分割; 白名单中的地址不用认证用户
@@ -80,6 +102,10 @@ public class VanasSecurityConfig implements Serializable {
         this.csrfPermitUrl = getStringArray(csrfPermitUrl);
     }
 
+    public void setxFrameAllowUri(String xFrameAllowUri) {
+        this.xFrameAllowUri = getStringArray(xFrameAllowUri);
+    }
+
     private String[] getStringArray(String attrVal){
         if(StringUtils.isEmpty(attrVal)){
             return null;
@@ -94,6 +120,7 @@ public class VanasSecurityConfig implements Serializable {
             }
             finalList.add(attr.trim());
         }
-        return (String[])finalList.toArray();
+
+        return finalList.toArray(new String[0]);
     }
 }

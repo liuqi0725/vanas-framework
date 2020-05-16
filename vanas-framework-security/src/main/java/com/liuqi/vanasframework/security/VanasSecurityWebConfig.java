@@ -14,8 +14,11 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.header.writers.frameoptions.WhiteListedAllowFromStrategy;
+import org.springframework.security.web.header.writers.frameoptions.XFrameOptionsHeaderWriter;
 import org.springframework.util.Assert;
 
+import java.util.Arrays;
 import java.util.Collections;
 
 /**
@@ -61,6 +64,11 @@ public class VanasSecurityWebConfig extends WebSecurityConfigurerAdapter {
 
         http.addFilterAt(getUserLoginAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 
+        if(Vanas.customerConfig.getSecurity().getXFrameEnabled()){
+            // 允许 frame
+            setFrameAllow(http);
+        }
+
         http.authorizeRequests()
                 .antMatchers(Vanas.customerConfig.getSecurity().getPermitUrl()).permitAll()
                 .anyRequest().authenticated() // 其他地址的访问均需验证权限
@@ -83,6 +91,25 @@ public class VanasSecurityWebConfig extends WebSecurityConfigurerAdapter {
         }
 
         http.logout().permitAll().logoutSuccessUrl(Vanas.customerConfig.getSecurity().getLoginOutSuccessUrl());    // 退出登录成功页面
+    }
+
+    private void setFrameAllow(HttpSecurity http) throws Exception {
+
+        if(Vanas.customerConfig.getSecurity().getXFrameOptions().equals("SAMEORIGIN")){
+            // 仅允许本域名
+            http.headers().frameOptions().sameOrigin();
+        }else if(Vanas.customerConfig.getSecurity().getXFrameOptions().equals("FROMURI")){
+            //disable 默认策略。 这一句不能省。
+            http.headers().frameOptions().disable();
+            //新增新的策略。
+            http.headers().addHeaderWriter(new XFrameOptionsHeaderWriter(
+                    new WhiteListedAllowFromStrategy(Arrays.asList(Vanas.customerConfig.getSecurity().getXFrameAllowUri()))
+            ));
+        }else{
+            throw new Exception("未知的 XFrameOptions 。仅支持 SAMEORIGIN , FROMURI");
+        }
+
+
     }
 
     /**
