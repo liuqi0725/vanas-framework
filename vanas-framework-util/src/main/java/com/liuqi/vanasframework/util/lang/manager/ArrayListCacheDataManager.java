@@ -46,7 +46,7 @@ public class ArrayListCacheDataManager<E extends Serializable> extends AbstractC
     public void add(E element) {
         this.elementData.add(element);
         // 改变缓存
-        this.reSetCacheData(true);
+        this.reSetCacheData(this.elementData);
     }
 
     @Override
