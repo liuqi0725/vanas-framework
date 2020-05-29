@@ -13,7 +13,7 @@
 	<packaging>jar</packaging>
 
 	<artifactId>vanas-framework-core</artifactId>
-	<version>1.0.1.3-Preview</version>
+	<version>1.0.1.4-Preview</version>
 	<name>vanas-framework-core</name>
 	<description>Demo project for Spring Boot</description>
 
