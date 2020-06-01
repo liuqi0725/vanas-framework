@@ -38,6 +38,8 @@ public class ResponseJsonHandler implements Serializable{
 
     private String ATTR_MSG = "msg";
 
+    private String ATTR_CODE = "code";
+
     private String DEFAULT_SUCCESS_MSG = "操作成功";
 
 
@@ -48,6 +50,8 @@ public class ResponseJsonHandler implements Serializable{
     private ErrorMap errorInfo;
 
     private Object data;
+
+    private String code;
 
     public static ResponseJsonHandler getInstance(){
         return ResponseJsonHandlerHook.instance;
@@ -89,7 +93,11 @@ public class ResponseJsonHandler implements Serializable{
 
 
     public Map<String,Object> failureRenderMap(String msg){
-        return this.failureRenderMap(null, msg);
+        return this.failureRenderMap(msg , null);
+    }
+
+    public Map<String,Object> failureRenderMap(String msg , String errorCode){
+        return this.failureRenderMap(null, msg , errorCode);
     }
 
     public Map<String,Object> failureRenderMap(ErrorMap errorInfo){
@@ -97,15 +105,24 @@ public class ResponseJsonHandler implements Serializable{
     }
 
     public Map<String,Object> failureRenderMap(ErrorMap errorInfo , String msg){
+        return failureRenderMap(errorInfo , msg, null);
+    }
+
+    public Map<String,Object> failureRenderMap(ErrorMap errorInfo , String msg , String errorCode){
         this.success = false;
         this.msg = msg;
         this.errorInfo = errorInfo;
+        this.code = getErrorCode(errorInfo,errorCode);
         return this.renderJSON();
     }
 
 
     public ModelAndView failureRenderModelView(String msg){
-        return this.failureRenderModelView(null, msg);
+        return this.failureRenderModelView(msg , null);
+    }
+
+    public ModelAndView failureRenderModelView(String msg, String errorCode){
+        return this.failureRenderModelView(null, msg , errorCode);
     }
 
     public ModelAndView failureRenderModelView(ErrorMap errorInfo){
@@ -113,9 +130,14 @@ public class ResponseJsonHandler implements Serializable{
     }
 
     public ModelAndView failureRenderModelView(ErrorMap errorInfo , String msg){
+        return failureRenderModelView(errorInfo , msg , null);
+    }
+
+    public ModelAndView failureRenderModelView(ErrorMap errorInfo , String msg , String errorCode){
         this.success = false;
         this.msg = msg;
         this.errorInfo = errorInfo;
+        this.code = this.getErrorCode(errorInfo,errorCode);
         return this.renderModelAndViewJSON();
     }
 
@@ -137,6 +159,19 @@ public class ResponseJsonHandler implements Serializable{
 //        errorInfo = ResponseErrorMapHandler.createErrorResponseBodyData(request,e,exceptionErrorCode);
 //    }
 
+    private String getErrorCode(ErrorMap errorInfo , String errorCode){
+
+        // errorMap 的 errorcode 低于 手动录入的
+        if(StringUtils.isNotEmpty(errorCode)){
+            return errorCode;
+        }
+
+        if(StringUtils.isNotEmpty(errorInfo.getErrorCode())){
+            return errorInfo.getErrorCode();
+        }
+        return null;
+    }
+
     private ModelAndView renderModelAndViewJSON(){
         ModelAndView modelAndView = new ModelAndView(new MappingJackson2JsonView());
         modelAndView.addObject(ATTR_SUCCESS, success);
@@ -145,6 +180,7 @@ public class ResponseJsonHandler implements Serializable{
         }else{
             modelAndView.addObject(ATTR_ERRORINFO, errorInfo);
         }
+        modelAndView.addObject(ATTR_CODE, code);
         modelAndView.addObject(ATTR_MSG, msg);
         return modelAndView;
     }
@@ -160,6 +196,7 @@ public class ResponseJsonHandler implements Serializable{
             map.put(ATTR_ERRORINFO , errorInfo);
         }
 
+        map.put(ATTR_CODE , code);
         map.put(ATTR_MSG , msg);
 
         return map;
@@ -180,6 +217,7 @@ public class ResponseJsonHandler implements Serializable{
             map.put(ATTR_ERRORINFO , result.getMsg());
         }
 
+        map.put(ATTR_CODE , result.getCode());
         map.put(ATTR_MSG , result.getMsg());
 
         return map;

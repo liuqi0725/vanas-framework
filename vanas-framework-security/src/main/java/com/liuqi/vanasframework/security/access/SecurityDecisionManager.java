@@ -1,15 +1,17 @@
 package com.liuqi.vanasframework.security.access;
 
-import com.liuqi.vanasframework.util.WebUtils;
 import org.springframework.security.access.AccessDecisionManager;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Collection;
 
 /**
@@ -56,7 +58,7 @@ public class SecurityDecisionManager implements AccessDecisionManager{
             for (GrantedAuthority grantedAuthority : authentication.getAuthorities()) {
                 if (attr.equals(grantedAuthority.getAuthority())){
                     // 记录当前访问权限在 session
-                    WebUtils.setSessionAttribute(CURRENT_AUTHENTICATION_ATTR ,attr);
+                    getRequest().getSession().setAttribute(CURRENT_AUTHENTICATION_ATTR ,attr);
                     return;
                 }
             }
@@ -80,5 +82,12 @@ public class SecurityDecisionManager implements AccessDecisionManager{
     @Override
     public boolean supports(Class<?> aClass) {
         return true;
+    }
+
+    private static HttpServletRequest getRequest(){
+        RequestAttributes attributes = RequestContextHolder.getRequestAttributes();
+        ServletRequestAttributes requestAttributes = (ServletRequestAttributes) attributes;
+        assert requestAttributes != null;
+        return requestAttributes.getRequest();
     }
 }

@@ -30,6 +30,8 @@ public class DataResult {
 
     private String msg = "";
 
+    private String code = "";
+
     private ResultStatus msgType = ResultStatus.SUCCESS;
 
     private Map<String ,Object> data = new HashMap<String , Object>();
@@ -40,6 +42,14 @@ public class DataResult {
 
     public String getMsg() {
         return msg;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 
     public ResultStatus getMsgType() {

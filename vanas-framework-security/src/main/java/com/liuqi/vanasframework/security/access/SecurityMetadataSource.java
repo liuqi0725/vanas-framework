@@ -1,7 +1,9 @@
 package com.liuqi.vanasframework.security.access;
 
+import com.liuqi.vanasframework.core.Vanas;
 import com.liuqi.vanasframework.security.entity.SecurityPermission;
 import com.liuqi.vanasframework.security.service.VanasSecurityDaoService;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.access.SecurityConfig;
 import org.springframework.security.web.FilterInvocation;
@@ -10,6 +12,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -60,10 +63,16 @@ public class SecurityMetadataSource implements FilterInvocationSecurityMetadataS
             // 读取所有权限
             loadPermissionMap();
         }
+        FilterInvocation fi = (FilterInvocation)o;
+
+        // 查看是否白名单
+        if(isWriteList(fi.getRequest())){
+            // 不用通过决策器，直接访问
+            return null;
+        }
 
         Assert.notNull(permissionMap , "PermissionMap can`t be Null.check your code");
 
-        FilterInvocation fi = (FilterInvocation)o;
         for(AntPathRequestMatcher permissionURLMatcher : permissionMap.keySet()){
 
             if(permissionURLMatcher.matches(fi.getRequest())){
@@ -71,8 +80,27 @@ public class SecurityMetadataSource implements FilterInvocationSecurityMetadataS
                 return permissionMap.get(permissionURLMatcher);
             }
         }
+
+        // 不是白名单，没有权限  抛出异常
+        throw new AccessDeniedException("No Permission");
+
         // 没匹配到返回 null
-        return null;
+        // return null;
+    }
+
+    private boolean isWriteList(HttpServletRequest request){
+        String[] writeList = Vanas.customerConfig.getSecurity().getPermitUrl();
+
+        Assert.notNull(writeList , "URL WriteList can`t be Null.check your `application-customer.yaml`. 【vanas.security.permit-url】 value");
+
+        AntPathRequestMatcher matcher;
+        for(String writeURL : writeList){
+            matcher = new AntPathRequestMatcher(writeURL);
+            if(matcher.matches(request)){
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

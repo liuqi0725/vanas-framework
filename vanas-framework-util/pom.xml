@@ -47,7 +47,7 @@
 		<dependency>
 			<groupId>com.35liuqi</groupId>
 			<artifactId>vanas-framework-core</artifactId>
-			<version>1.0.1.4-Preview</version>
+			<version>1.0.1.5-Preview</version>
 		</dependency>
 	</dependencies>
 

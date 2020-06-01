@@ -52,6 +52,18 @@ public class BaseController extends AbstractController{
 
     /**
      * 返回 json 消息
+     * @param msg 错误消息
+     * @return Map 对象
+     */
+    protected Map<String, Object> renderJSONError(String msg, String errorCode){
+        DataResult result = new DataResult();
+        result.error(msg);
+        result.setCode(errorCode);
+        return ResponseJsonHandler.getInstance().renderJSON(result);
+    }
+
+    /**
+     * 返回 json 消息
      * @param result {@link DataResult} 返回对象
      * @return Map 对象
      */

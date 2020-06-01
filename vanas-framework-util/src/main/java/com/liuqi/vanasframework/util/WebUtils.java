@@ -19,18 +19,13 @@ import java.util.UUID;
  */
 public class WebUtils {
 
-    private static RequestAttributes requestAttributes;
-
 
     private static ServletRequestAttributes getServletRequestAttributes(){
         return (ServletRequestAttributes)getRequestAttributes();
     }
 
     private static RequestAttributes getRequestAttributes(){
-        if(requestAttributes == null){
-            requestAttributes = RequestContextHolder.getRequestAttributes();
-        }
-        return requestAttributes;
+        return RequestContextHolder.getRequestAttributes();
     }
 
     /**
