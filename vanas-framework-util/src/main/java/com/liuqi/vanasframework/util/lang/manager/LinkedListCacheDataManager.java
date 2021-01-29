@@ -12,7 +12,7 @@ import java.util.LinkedList;
  * <p>
  * 构造说明 :
  * <pre>
- *
+ *  针对链表缓存的数据处理
  * </pre>
  *
  * @author : alexliu

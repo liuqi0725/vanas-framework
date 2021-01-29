@@ -7,7 +7,7 @@ import com.liuqi.vanasframework.util.CacheUtil;
  * <p>
  * 构造说明 :
  * <pre>
- *
+ * 集合类缓存数据处理超类
  * </pre>
  *
  * @author : alexliu
@@ -49,7 +49,7 @@ public abstract class AbstractCollectionCacheDataManager<E> implements Collectio
 
     @Override
     public void destroy() {
-        CacheUtil.getInstance().removeCacheData(cacheName,cacheKey);
+//        CacheUtil.getInstance().removeCacheData(cacheName,cacheKey);
     }
 
     /**

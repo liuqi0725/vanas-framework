@@ -25,6 +25,14 @@ public abstract class PageBean implements Serializable{
         return limit;
     }
 
+    public void setPage(Integer page) {
+        this.page = page;
+    }
+
+    public void setLimit(Integer limit) {
+        this.limit = limit;
+    }
+
     /**
      * 一般通用分页设置
      *

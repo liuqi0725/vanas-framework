@@ -47,6 +47,12 @@ public class VanasCustomerConfig implements Serializable {
     private String superAdminRole;
 
     /**
+     * 框架消息配置
+     */
+    @NestedConfigurationProperty
+    private VanasMessageCenterConfig message;
+
+    /**
      * 安全配置
      */
     @NestedConfigurationProperty

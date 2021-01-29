@@ -1,16 +1,14 @@
 package com.liuqi.vanasframework.core;
 
 import com.liuqi.vanasframework.core.conf.VanasCustomerConfig;
-import com.liuqi.vanasframework.core.exception.AppBootstrapException;
 import com.liuqi.vanasframework.core.interceptor.GetRequestResultTypeInterceptor;
 import com.liuqi.vanasframework.core.mvc.view.FreeMarkerConfig;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.jcache.JCacheCacheManager;
+import org.springframework.cache.CacheManager;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.context.annotation.Bean;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -35,6 +33,9 @@ public abstract class VanasAppWebConfig implements WebMvcConfigurer, Application
     @Autowired
     private VanasCustomerConfig vanasCustomerConfig;
 
+    @Autowired
+    private CacheManager springAutoFitCacheManager;
+
     /**
      * 添加 获取请求类型的拦截器，该拦截器获取用户请求类型，当错误时返回 view 或 json
      * @param registry spring filter 注册器
@@ -43,6 +44,8 @@ public abstract class VanasAppWebConfig implements WebMvcConfigurer, Application
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new GetRequestResultTypeInterceptor());
     }
+
+    public abstract CacheManager getCacheManager();
 
     /**
      * 设置 spring 上下文到系统中，方便在外部调用。 外部使用 Vanas.SpringContext 即可
@@ -55,83 +58,36 @@ public abstract class VanasAppWebConfig implements WebMvcConfigurer, Application
         Vanas.SpringContext = applicationContext;
         log.info("Vanas Customer Config success set on. {}", vanasCustomerConfig);
         Vanas.customerConfig = vanasCustomerConfig;
+        log.info("Vanas CacheManager success set on. ");
+        CacheManager cacheManager = getCacheManager();
+        if(cacheManager == null){
+            cacheManager = springAutoFitCacheManager;
+        }
+        Vanas.cacheManager = cacheManager;
     }
-
-    /**
-     * 获取缓存配置文件
-     * @return 配置文件路径
-     */
-    //public abstract String getCacheConfigPath();
 
     /**
      * 初始化缓存
      */
-    @Bean
-    private void initCacheManager() {
-
-        log.info("缓存加载初始化 ehcache 3.x .");
-
-        log.info("缓存加载初始化 >> 加载 spring 缓存管理器.");
-        try {
-//            CachingProvider provider = Caching.getCachingProvider("org.ehcache.jsr107.EhcacheCachingProvider");
-//            URI uri = new ClassPathResource(getCacheConfigPath()).getURI();// getClass().getResource(getCacheConfigPath()).toURI();
-//            CacheManager cacheManager = provider.getCacheManager(uri, getClass().getClassLoader());
-//            CacheManager cacheManager = cacheCacheManager.getCacheManager();
-//            cacheCacheManager
-
-            Vanas.cacheManager = Vanas.SpringContext.getBean(JCacheCacheManager.class);//new JCacheCacheManager(cacheManager);
-        } catch (Exception e) {
-            log.error("缓存加载初始化 >> Error : ",e);
-            throw new AppBootstrapException("缓存加载失败" , e);
-        }
-    }
-
-
-
-    /**
-     * 缓存管理器
-     * @return spring 缓存管理器
-     */
-//    @Bean("jCacheManagerFactoryBean")
-//    public JCacheManagerFactoryBean mManagerFactoryBean() {
+//    @Bean
+//    private void initCacheManager() {
+//
 //        log.info("缓存加载初始化 ehcache 3.x .");
 //
 //        log.info("缓存加载初始化 >> 加载 spring 缓存管理器.");
-//
-//        if(StringUtils.isEmpty(getCacheConfigPath())){
-//            log.warn("缓存加载初始化 >> cacheConfigPath() 配置文件路径为空。 放弃加载缓存。");
-//            return null;
-//        }
-//
-//        JCacheManagerFactoryBean factoryBean;
 //        try {
-//            factoryBean = new JCacheManagerFactoryBean();
-//            factoryBean.setCacheManagerUri(new ClassPathResource(getCacheConfigPath()).getURI());
+////            CachingProvider provider = Caching.getCachingProvider("org.ehcache.jsr107.EhcacheCachingProvider");
+////            URI uri = new ClassPathResource(getCacheConfigPath()).getURI();// getClass().getResource(getCacheConfigPath()).toURI();
+////            CacheManager cacheManager = provider.getCacheManager(uri, getClass().getClassLoader());
+////            CacheManager cacheManager = cacheCacheManager.getCacheManager();
+////            cacheCacheManager
 //
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            log.error("缓存加载失败，{} 配置文件不存在",getCacheConfigPath());
-//            return null;
+//
+//            Vanas.cacheManager = Vanas.SpringContext.getBean(RedisCacheConfig.class).cacheManager();
+////            Vanas.cacheManager = Vanas.SpringContext.getBean(JCacheCacheManager.class);//new JCacheCacheManager(cacheManager);
+//        } catch (Exception e) {
+//            log.error("缓存加载初始化 >> Error : ",e);
+//            throw new AppBootstrapException("缓存加载失败" , e);
 //        }
-//
-//        return factoryBean;
-//    }
-
-    /**
-     * 缓存管理器
-     * @return 缓存管理器
-     */
-//    @Bean
-//    public JCacheCacheManager cacheInitManage(@Qualifier("jCacheManagerFactoryBean") CacheManager cacheManager) {
-//
-//        if(cacheManager == null){
-//            log.warn("缓存加载初始化 >> cacheManager 为空。 放弃加载缓存。");
-//            return null;
-//        }
-//
-//        // 返回 org.springframework.CacheManager
-//        // CacheManager cacheManager = new ConcurrentMapCacheManager();
-//        Vanas.cacheManager = new JCacheCacheManager(cacheManager);
-//        return Vanas.cacheManager;
 //    }
 }

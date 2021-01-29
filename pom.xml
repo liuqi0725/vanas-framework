@@ -16,7 +16,7 @@
 	<!-- 基础信息 -->
 	<groupId>com.35liuqi</groupId>
 	<artifactId>vanas-framework</artifactId>
-	<version>1.0.1-Preview</version>
+	<version>1.0_res_210113</version>
 	<name>vanas-framework</name>
 	<description>基于Springboot 的 web 应用开发工具包</description>
 

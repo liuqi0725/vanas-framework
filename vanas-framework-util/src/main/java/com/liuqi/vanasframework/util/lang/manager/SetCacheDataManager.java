@@ -13,7 +13,7 @@ import java.util.Set;
  * <p>
  * 构造说明 :
  * <pre>
- *
+ *  缓存 set 数据管理器
  * </pre>
  *
  * @author : alexliu

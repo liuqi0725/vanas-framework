@@ -7,7 +7,7 @@ import java.util.Collection;
  * <p>
  * 构造说明 :
  * <pre>
- *
+ * 针对集合的 cache 数据处理
  * </pre>
  *
  * @author : alexliu

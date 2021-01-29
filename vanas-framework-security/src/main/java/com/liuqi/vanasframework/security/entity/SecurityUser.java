@@ -22,6 +22,8 @@ import java.util.List;
  */
 public abstract class SecurityUser extends PageBean implements UserDetails {
 
+    private static final long serialVersionUID = 7366180833051764814L;
+
     protected String username;
 
     protected String password;
@@ -51,12 +53,15 @@ public abstract class SecurityUser extends PageBean implements UserDetails {
         isSuperAdmin = superAdmin;
     }
 
-    public void setAuthorities(List<SecurityPermission> authorities) {
-
+    /**
+     * 转化用户拥有的权限为 springsecurity 权限的对象
+     * @param userGrantedPermissionList 用户权限集合
+     */
+    public void appendUserGrantedPermissions(List<? extends SecurityPermission> userGrantedPermissionList){
         List<SimpleGrantedAuthority> list = new ArrayList<>();
         List<SecurityPermission> pList = new ArrayList<>();
 
-        for(SecurityPermission p : authorities) {
+        for(SecurityPermission p : userGrantedPermissionList) {
             list.add(new SimpleGrantedAuthority(p.getUnKey()));
             pList.add(p);
         }
@@ -65,7 +70,7 @@ public abstract class SecurityUser extends PageBean implements UserDetails {
     }
 
     @SuppressWarnings("unchecked")
-    public void setAuthorities(SecurityPermission permission) {
+    public void appendUserGrantedPermission(SecurityPermission userGrantedPermission) {
         List<SimpleGrantedAuthority> list;
         List<SecurityPermission> pList;
 
@@ -76,9 +81,9 @@ public abstract class SecurityUser extends PageBean implements UserDetails {
             list = (List<SimpleGrantedAuthority>)getAuthorities();
             pList = (List<SecurityPermission>)getPermission();
         }
-        SimpleGrantedAuthority auth = new SimpleGrantedAuthority(permission.getUnKey());
+        SimpleGrantedAuthority auth = new SimpleGrantedAuthority(userGrantedPermission.getUnKey());
         list.add(auth);
-        pList.add(permission);
+        pList.add(userGrantedPermission);
 
         this.authorities = list;
         this.permissions = pList;
@@ -111,27 +116,66 @@ public abstract class SecurityUser extends PageBean implements UserDetails {
         return this.username;
     }
 
+
+
+    /**
+     * 是否过期，不添加，redis 无法反序列化
+     */
+    private boolean accountNonExpired;
+
+    /**
+     * 是否锁定，不添加，redis 无法反序列化
+     */
+    private boolean accountNonLocked;
+
+    /**
+     * 密码是否过期，不添加，redis 无法反序列化
+     */
+    private boolean credentialsNonExpired;
+
+    /**
+     * 是否激活，不添加，redis 无法反序列化
+     */
+    private boolean enabled;
+
+    public void setAccountNonExpired(boolean accountNonExpired) {
+        this.accountNonExpired = accountNonExpired;
+    }
+
+    public void setAccountNonLocked(boolean accountNonLocked) {
+        this.accountNonLocked = accountNonLocked;
+    }
+
+    public void setCredentialsNonExpired(boolean credentialsNonExpired) {
+        this.credentialsNonExpired = credentialsNonExpired;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+
     @Override
     public boolean isAccountNonExpired() {
         // 账号是否 未过期
-        return true;
+        return this.accountNonExpired;
     }
 
     @Override
     public boolean isAccountNonLocked() {
         // 账号是否 未锁定
-        return true;
+        return this.accountNonLocked;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
         // 密码是 否未过期
-        return true;
+        return this.credentialsNonExpired;
     }
 
     @Override
     public boolean isEnabled() {
         // 是否激活
-        return true;
+        return this.enabled;
     }
 }

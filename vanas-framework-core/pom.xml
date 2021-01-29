@@ -6,14 +6,14 @@
 	<parent>
 		<groupId>com.35liuqi</groupId>
 		<artifactId>vanas-framework</artifactId>
-		<version>1.0.1-Preview</version>
+		<version>1.0_res_210113</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
 	<packaging>jar</packaging>
 
 	<artifactId>vanas-framework-core</artifactId>
-	<version>1.0.1.5-Preview</version>
+	<version>1.0_res_210113</version>
 	<name>vanas-framework-core</name>
 	<description>Demo project for Spring Boot</description>
 
@@ -97,25 +97,6 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-cache</artifactId>
 		</dependency>
-
-		<!-- ehcache 缓存 -->
-		<dependency>
-			<groupId>org.ehcache</groupId>
-			<artifactId>ehcache</artifactId>
-		</dependency>
-
-		<!-- spring cache 托管 -->
-		<dependency>
-			<groupId>javax.cache</groupId>
-			<artifactId>cache-api</artifactId>
-		</dependency>
-
-		<!-- 用 ehcache 2.x -->
-		<!--<dependency>-->
-			<!--<groupId>net.sf.ehcache</groupId>-->
-			<!--<artifactId>ehcache</artifactId>-->
-			<!--<version>2.10.6</version>-->
-		<!--</dependency>-->
 
     </dependencies>
 

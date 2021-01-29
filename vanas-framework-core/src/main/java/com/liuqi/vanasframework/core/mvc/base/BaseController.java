@@ -53,6 +53,7 @@ public class BaseController extends AbstractController{
     /**
      * 返回 json 消息
      * @param msg 错误消息
+     * @param errorCode 错误编码
      * @return Map 对象
      */
     protected Map<String, Object> renderJSONError(String msg, String errorCode){

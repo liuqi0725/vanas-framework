@@ -13,7 +13,7 @@ import java.util.List;
  * <p>
  * 构造说明 :
  * <pre>
- *
+ * arraylist 集合缓存数据处理
  * </pre>
  *
  * @author : alexliu

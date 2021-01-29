@@ -6,9 +6,8 @@ import com.liuqi.vanasframework.core.exception.AppException;
 import com.liuqi.vanasframework.util.lang.manager.ArrayListCacheDataManager;
 import com.liuqi.vanasframework.util.lang.manager.LinkedListCacheDataManager;
 import com.liuqi.vanasframework.util.lang.manager.SetCacheDataManager;
+import org.springframework.cache.Cache;
 
-import javax.cache.Cache;
-import javax.cache.CacheManager;
 import java.io.Serializable;
 import java.util.*;
 
@@ -35,15 +34,26 @@ public class CacheUtil {
     }
 
     /**
+     * 获取 cache
+     * @param cacheName 缓存名称
+     * @return 缓存对象
+     */
+    private Cache getCache(String cacheName){
+        Objects.requireNonNull(Objects.requireNonNull(Vanas.cacheManager));
+        return Vanas.cacheManager.getCache(cacheName);
+    }
+
+    /**
      * 设置缓存 【同步方法】
      * @param cacheName 缓存名称
      * @param key 存储对象 key
      * @param val 存储对象 值
      * @throws NullPointerException 空指针
      */
-    public synchronized void setVal(String cacheName, Object key , Object val){
+    public void setVal(String cacheName, Object key , Object val){
         Objects.requireNonNull(Vanas.cacheManager.getCache(cacheName)).put(key , val);
     }
+
 
     /**
      * 删除缓存<br>
@@ -66,40 +76,40 @@ public class CacheUtil {
      *     {@code CacheUtil.getInstance().destroyCache("cache2"); } 将删除 cache2 这个缓存。
      * </pre>
      */
-    public synchronized void destroyCache(String cacheName){
-
-        try {
-            CacheManager manager = (CacheManager)Vanas.cacheManager.getCacheManager();
-            if(manager == null){
-                throw new AppException("没有找到 cacheManager");
-            }
-            if(getCache(manager,cacheName) != null){
-                manager.destroyCache(cacheName);
-            }
-        }catch (NullPointerException e){
-        }
-    }
+//    public synchronized void destroyCache(String cacheName){
+//
+//        try {
+//            Cache cache = getCache(cacheName);
+//
+//            Vanas.cacheManager.getCache(cacheName).clear();
+//
+//            if(getCache(manager,cacheName) != null){
+//                manager.destroyCache(cacheName);
+//            }
+//        }catch (NullPointerException e){
+//        }
+//    }
 
     /**
      * 删除所有缓存 <br>
      * 慎用！慎用！慎用！慎用！慎用！慎用！慎用！
      * 原理同 {@link #destroyCache(String)}
      */
-    public synchronized void destroyCacheAll(){
-        try {
-            CacheManager manager = (CacheManager)Vanas.cacheManager.getCacheManager();
-            if(manager == null){
-                throw new AppException("没有找到 cacheManager");
-            }
-
-            Iterable<String> cacheNames = manager.getCacheNames();
-            for(String name : cacheNames){
-                manager.destroyCache(name);
-            }
-
-        }catch (NullPointerException e){
-        }
-    }
+//    public synchronized void destroyCacheAll(){
+//        try {
+//            CacheManager manager = (CacheManager) Vanas.cacheManager;
+//            if(manager == null){
+//                throw new AppException("没有找到 cacheManager");
+//            }
+//
+//            Iterable<String> cacheNames = manager.getCacheNames();
+//            for(String name : cacheNames){
+//                manager.destroyCache(name);
+//            }
+//
+//        }catch (NullPointerException e){
+//        }
+//    }
 
     /**
      * 删除缓存下某一个存储数据
@@ -122,19 +132,19 @@ public class CacheUtil {
      *     {@code CacheUtil.getInstance().removeCacheData("cache2","item3"); } 将删除 cache2 这个缓存下 item3 的数据。。
      * </pre>
      */
-    public synchronized void removeCacheData(String cacheName , Object key){
-
-        try {
-            CacheManager manager = (CacheManager)Vanas.cacheManager.getCacheManager();
-            if(manager == null){
-                throw new AppException("没有找到 cacheManager");
-            }
-            if(getCache(manager,cacheName) != null){
-                manager.getCache(cacheName).remove(key);
-            }
-        }catch (NullPointerException e){
-        }
-    }
+//    public synchronized void removeCacheData(String cacheName , Object key){
+//
+//        try {
+//            CacheManager manager = (CacheManager) Vanas.cacheManager;
+//            if(manager == null){
+//                throw new AppException("没有找到 cacheManager");
+//            }
+//            if(getCache(manager,cacheName) != null){
+//                manager.getCache(cacheName).remove(key);
+//            }
+//        }catch (NullPointerException e){
+//        }
+//    }
 
     /**
      * 删除缓存下所有存储内容
@@ -156,17 +166,17 @@ public class CacheUtil {
      *     {@code CacheUtil.getInstance().removeCacheDataAll("cache2"); } 将删除 cache2 这个缓存下 item3,item4...等所有数据。单保留缓存 cache2<b>内容</b>。
      * </pre>
      */
-    public synchronized void removeCacheDataAll(String cacheName){
-        try {
-            CacheManager manager = (CacheManager)Vanas.cacheManager.getCacheManager();
-            if(manager == null){
-                throw new AppException("没有找到 cacheManager");
-            }
-            Cache cache = manager.getCache(cacheName);
-            cache.removeAll();
-        }catch (NullPointerException e){
-        }
-    }
+//    public synchronized void removeCacheDataAll(String cacheName){
+//        try {
+//            CacheManager manager = (CacheManager) Vanas.cacheManager;
+//            if(manager == null){
+//                throw new AppException("没有找到 cacheManager");
+//            }
+//            Cache cache = manager.getCache(cacheName);
+//            cache.removeAll();
+//        }catch (NullPointerException e){
+//        }
+//    }
 
     /**
      * 获取缓存对象
@@ -382,7 +392,7 @@ public class CacheUtil {
 //
 //        Map<String,List<Cache.Entry>> cacheData = new HashMap<>();
 //
-//        CacheManager manager = (CacheManager)Vanas.cacheManager.getCacheManager();
+//        CacheManager manager = Vanas.cacheManager;
 //
 //        if(manager == null){
 //            throw new AppException("没有找到 cacheManager");
@@ -426,12 +436,8 @@ public class CacheUtil {
 //        return cacheItemList;
 //    }
 
-    private Cache getCache(CacheManager manager , String cacheName){
-        return Objects.requireNonNull(Objects.requireNonNull(manager.getCache(cacheName)));
-    }
-
     private Object getCacheData(String cacheName, Object key){
-        return Objects.requireNonNull(Objects.requireNonNull(Vanas.cacheManager.getCache(cacheName)).get(key)).get();
+        return Objects.requireNonNull(getCache(cacheName).get(key)).get();
     }
 
 }
