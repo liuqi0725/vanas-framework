@@ -1,0 +1,8 @@
+/vanas-framework-web/
+/vanas-framework.iml
+/vanas-framework-util/.gitignore
+/vanas-framework-security/.gitignore
+/vanas-framework-core/.gitignore
+/target/
+/.idea/
+/logs/
