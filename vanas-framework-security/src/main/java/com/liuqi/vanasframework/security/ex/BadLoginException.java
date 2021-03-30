@@ -16,14 +16,14 @@ import com.liuqi.vanasframework.core.exception.AppException;
 public class BadLoginException extends AppException {
 
     public BadLoginException(String msg) {
-        super(ExceptionErrorCode.LOGIN_ERROR, msg);
+        super(ExceptionErrorCode.LOGIN_ERROR.getCode(), msg);
     }
 
     public BadLoginException(ExceptionErrorCode code , String msg) {
-        super(code, msg);
+        super(code.getCode(), msg);
     }
 
     public BadLoginException(String msg , Throwable t) {
-        super(msg, t);
+        super(ExceptionErrorCode.LOGIN_ERROR.getCode(),msg, t);
     }
 }

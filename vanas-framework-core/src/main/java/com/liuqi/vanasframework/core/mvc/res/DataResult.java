@@ -88,7 +88,7 @@ public class DataResult {
 
         // 判断 obj 是否能强转为参数的泛型。不能强转就抛锅。
         if (classz != null && !classz.isInstance(obj)) {
-            throw new AppException(ExceptionErrorCode.NOT_SUPPORT_TYPE, "key="+key+"的对象为："+obj.getClass()+" ， 不能转化为：" + classz);
+            throw new AppException(ExceptionErrorCode.NOT_SUPPORT_TYPE.getCode(), "key="+key+"的对象为："+obj.getClass()+" ， 不能转化为：" + classz);
         }
 
         return (T) obj;

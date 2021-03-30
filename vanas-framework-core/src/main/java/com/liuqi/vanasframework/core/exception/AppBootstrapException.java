@@ -13,10 +13,10 @@ import com.liuqi.vanasframework.core.conf.norm.ExceptionErrorCode;
 public class AppBootstrapException extends AppException{
 
     public AppBootstrapException(String msg) {
-        super(ExceptionErrorCode.SYSTEM_ERROR , msg);
+        super(ExceptionErrorCode.SYSTEM_ERROR.getCode() , msg);
     }
 
     public AppBootstrapException(String msg , Throwable t) {
-        super(msg, t);
+        super(ExceptionErrorCode.SYSTEM_ERROR.getCode(), msg, t);
     }
 }

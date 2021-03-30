@@ -32,7 +32,8 @@ public class ControllerExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ModelAndView exceptionHandler(Exception e, HttpServletRequest request){
         return exceptionHandlerProcess(request ,
-                ExceptionErrorCode.BAD_REQUEST,
+                ExceptionErrorCode.BAD_REQUEST.getCode(),
+                ExceptionErrorCode.BAD_REQUEST.getDesc(),
                 e
         );
     }
@@ -40,7 +41,8 @@ public class ControllerExceptionHandler {
     @ExceptionHandler(NullPointerException.class)
     public ModelAndView nullPointerExceptionHandler(NullPointerException e, HttpServletRequest request , Model model) {
         return exceptionHandlerProcess(request ,
-                ExceptionErrorCode.NULL_ERROR,
+                ExceptionErrorCode.NULL_ERROR.getCode(),
+                ExceptionErrorCode.NULL_ERROR.getDesc(),
                 e
         );
     }
@@ -50,19 +52,21 @@ public class ControllerExceptionHandler {
 
         return exceptionHandlerProcess(request ,
                 e.getExceptionErrorCode(),
+                e.getExceptionErrorMsg(),
                 e
         );
     }
 
 
     private <T extends Exception> ModelAndView exceptionHandlerProcess(HttpServletRequest request ,
-                                                     ExceptionErrorCode errorCode,
+                                                     String errorCode,
+                                                     String errorMsg,
                                                      T exception){
 
         // 打印日志
         logger.error(errorCode,exception);
 
-        ErrorMap errorMap = ResponseErrorMapHandler.createErrorMap(request,exception,errorCode);
+        ErrorMap errorMap = ResponseErrorMapHandler.createErrorMap(request, exception, errorCode, errorMsg);
 
         ModelAndView mv;
         if(isView(request)){

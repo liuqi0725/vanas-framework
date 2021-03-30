@@ -212,7 +212,7 @@ public class ResponseJsonHandler implements Serializable{
             map.put(ATTR_DATA , result.getData());
         }else{
             if(StringUtils.isEmpty(result.getMsg())){
-                throw new AppException(ExceptionErrorCode.NULL_ERROR, "返回 json 对象的 msg 为空。当Request 业务出现 Error时，返回消息不能为空。");
+                throw new AppException(ExceptionErrorCode.NULL_ERROR.getCode(), "返回 json 对象的 msg 为空。当Request 业务出现 Error时，返回消息不能为空。");
             }
             map.put(ATTR_ERRORINFO , result.getMsg());
         }

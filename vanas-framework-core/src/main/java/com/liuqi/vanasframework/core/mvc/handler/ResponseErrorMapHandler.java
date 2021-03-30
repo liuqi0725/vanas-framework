@@ -3,6 +3,7 @@ package com.liuqi.vanasframework.core.mvc.handler;
 import com.liuqi.vanasframework.core.conf.norm.ExceptionErrorCode;
 import com.liuqi.vanasframework.core.exception.AppException;
 import com.liuqi.vanasframework.core.mvc.entity.ErrorMap;
+import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
@@ -34,19 +35,25 @@ public class ResponseErrorMapHandler {
      * 生成 {@link ErrorMap}
      * @param request HttpServletRequest
      * @param e 异常
-     * @param exceptionErrorCode 错误编码
+     * @param errorCode 错误编码
+     * @param errorMsg 错误信息
      * @param <T> 继承 Exception
      * @return ErrorMap 错误对象
      */
     public static <T extends Exception> ErrorMap createErrorMap(HttpServletRequest request ,
                                                                              T e ,
-                                                                             ExceptionErrorCode exceptionErrorCode){
+                                                                String errorCode,
+                                                                String errorMsg){
 
         ErrorMap map = new ErrorMap();
         map.setPath(request.getRequestURI());
-        map.setErrorMsg(e.getMessage());
+        if(StringUtils.isEmpty(errorMsg)){
+            map.setErrorMsg(e.getMessage());
+        }else{
+            map.setErrorMsg(errorMsg);
+        }
         map.setError(e.getClass().getSimpleName());
-        map.setErrorCode(exceptionErrorCode.getCode());
+        map.setErrorCode(errorCode);
         map.setTimestamp(new Date());
         if(e instanceof AppException){
             map.setErrorData(((AppException)e).getData());

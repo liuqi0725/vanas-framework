@@ -32,7 +32,7 @@ public class AssertUtil {
      */
     public static String notNull(String var, String errorMsg){
         if(var == null || var.equals("")){
-            throw new AppException(ExceptionErrorCode.NULL_ERROR , errorMsg);
+            throw new AppException(ExceptionErrorCode.NULL_ERROR.getCode() , errorMsg);
         }
         return var;
     }
@@ -54,7 +54,7 @@ public class AssertUtil {
      */
     public static Integer notNull(Integer var, String errorMsg){
         if(var == null){
-            throw new AppException(ExceptionErrorCode.NULL_ERROR , errorMsg);
+            throw new AppException(ExceptionErrorCode.NULL_ERROR.getCode() , errorMsg);
         }
 
         return var;
@@ -70,7 +70,7 @@ public class AssertUtil {
      */
     public static <T> T notNull(JSONObject jsonObject, String key , Class<T> classz){
         if(!jsonObject.containsKey(key)){
-            throw new AppException(ExceptionErrorCode.NULL_ERROR , "参数 "+key+"，不能为空");
+            throw new AppException(ExceptionErrorCode.NULL_ERROR.getCode() , "参数 "+key+"，不能为空");
         }
         return TypeUtil.cast(jsonObject.get(key) , classz);
     }
@@ -85,7 +85,7 @@ public class AssertUtil {
      */
     public static <T> T notNull(Map map, String key , Class<T> classz){
         if(!map.containsKey(key)){
-            throw new AppException(ExceptionErrorCode.NULL_ERROR , "参数 "+key+"，不能为空");
+            throw new AppException(ExceptionErrorCode.NULL_ERROR.getCode() , "参数 "+key+"，不能为空");
         }
         return TypeUtil.cast(map.get(key) , classz);
     }
@@ -109,7 +109,7 @@ public class AssertUtil {
      */
     public static <T> T notNull(T obj , String errorMsg){
         if (obj == null)
-            throw new AppException(ExceptionErrorCode.NULL_ERROR , errorMsg);
+            throw new AppException(ExceptionErrorCode.NULL_ERROR.getCode() , errorMsg);
         return obj;
     }
 
@@ -120,7 +120,7 @@ public class AssertUtil {
      */
     public static Integer isPositiveNumber(Integer val){
         if(val < 0){
-            throw new AppException(ExceptionErrorCode.NULL_ERROR , "不能执行，参数错误，数字型参数必须为正数。");
+            throw new AppException(ExceptionErrorCode.NULL_ERROR.getCode() , "不能执行，参数错误，数字型参数必须为正数。");
         }
 
         return val;
@@ -134,7 +134,7 @@ public class AssertUtil {
      */
     public static Integer isPositiveNumber(Integer val, String errorMsg){
         if(val < 0){
-            throw new AppException(ExceptionErrorCode.NULL_ERROR , errorMsg);
+            throw new AppException(ExceptionErrorCode.NULL_ERROR.getCode() , errorMsg);
         }
 
         return val;

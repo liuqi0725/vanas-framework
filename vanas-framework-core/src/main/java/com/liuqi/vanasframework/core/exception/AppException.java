@@ -22,80 +22,106 @@ public class AppException extends RuntimeException{
     /**
      *  错误码
      **/
-    private final ExceptionErrorCode exceptionErrorCode;
+//    private final ExceptionErrorCode exceptionErrorCode;
+
+    private String errorCode;
+
+    private String errorMsg;
 
 
     public AppException(Throwable t) {
         super(t);
-        this.exceptionErrorCode = ExceptionErrorCode.BAD_REQUEST;
+        this.errorCode = ExceptionErrorCode.BAD_REQUEST.getCode();
+        this.errorMsg = ExceptionErrorCode.BAD_REQUEST.getDesc();
+//        this.exceptionErrorCode = ExceptionErrorCode.BAD_REQUEST;
+    }
+
+//    public AppException(ExceptionErrorCode exceptionErrorCode) {
+//        super(exceptionErrorCode.getDesc());
+//        this.errorCode = exceptionErrorCode.getCode();
+//        this.errorMsg = exceptionErrorCode.getDesc();
+////        this.exceptionErrorCode = exceptionErrorCode;
+//    }
+//
+//    public AppException(ExceptionErrorCode exceptionErrorCode, String errorMsg) {
+//        super(errorMsg);
+//        this.errorCode = exceptionErrorCode.getCode();
+//        this.errorMsg = errorMsg;
+////        this.exceptionErrorCode = exceptionErrorCode;
+//    }
+//
+//    public AppException(ExceptionErrorCode exceptionErrorCode, String errorMsg , Throwable t) {
+//        super(errorMsg , t);
+//        this.errorCode = exceptionErrorCode.getCode();
+//        this.errorMsg = errorMsg;
+////        this.exceptionErrorCode = exceptionErrorCode;
+//    }
+//
+    public AppException(String errorMsg) {
+        super(errorMsg);
+        this.errorCode = ExceptionErrorCode.BAD_REQUEST.getCode();
+        this.errorMsg = errorMsg;
+    }
+//
+//    public AppException(String errorMsg , Throwable t) {
+//        super(errorMsg , t);
+//        this.errorCode = ExceptionErrorCode.BAD_REQUEST.getCode();
+//        this.errorMsg = errorMsg;
+////        this.exceptionErrorCode = ExceptionErrorCode.BAD_REQUEST;
+//    }
+//
+//    public AppException(Object data) {
+//        super(ExceptionErrorCode.PARAM_ERROR.getDesc());
+//        this.data = data;
+//        this.errorCode = ExceptionErrorCode.PARAM_ERROR.getCode();
+//        this.errorMsg = ExceptionErrorCode.PARAM_ERROR.getDesc();
+////        this.exceptionErrorCode = ExceptionErrorCode.PARAM_ERROR;
+//    }
+//
+//    public AppException(ExceptionErrorCode exceptionErrorCode, Object data) {
+//        super(exceptionErrorCode.getDesc());
+//        this.data = data;
+//        this.errorCode = exceptionErrorCode.getCode();
+//        this.errorMsg = exceptionErrorCode.getDesc();
+////        this.exceptionErrorCode = exceptionErrorCode;
+//    }
+//
+//    public AppException(ExceptionErrorCode exceptionErrorCode, String errorMsg , Object data) {
+//        super(errorMsg);
+//        this.data = data;
+//        this.errorCode = exceptionErrorCode.getCode();
+//        this.errorMsg = errorMsg;
+////        this.exceptionErrorCode = exceptionErrorCode;
+//    }
+//
+//    public AppException(ExceptionErrorCode exceptionErrorCode, String errorMsg , Throwable t ,  Object data) {
+//        super(errorMsg , t);
+//        this.data = data;
+//        this.errorCode = exceptionErrorCode.getCode();
+//        this.errorMsg = errorMsg;
+////        this.exceptionErrorCode = exceptionErrorCode;
+//    }
+
+
+    public AppException(String errorCode, String errorMsg) {
+        super(String.format("[%s] %s",errorCode,errorMsg));
+        this.errorCode = errorCode;
+        this.errorMsg = errorMsg;
+    }
+
+    public AppException(String errorCode, String errorMsg, Throwable t) {
+        super(String.format("[%s] %s",errorCode,errorMsg), t);
+        this.errorCode = errorCode;
+        this.errorMsg = errorMsg;
     }
 
 
-
-
-    public AppException(ExceptionErrorCode exceptionErrorCode) {
-        super(exceptionErrorCode.getDesc());
-        this.exceptionErrorCode = exceptionErrorCode;
+    public String getExceptionErrorCode() {
+        return this.errorCode;
     }
 
-    public AppException(ExceptionErrorCode exceptionErrorCode, String detailMessage) {
-        super(detailMessage);
-        this.exceptionErrorCode = exceptionErrorCode;
-    }
-
-    public AppException(ExceptionErrorCode exceptionErrorCode, String detailMessage , Throwable t) {
-        super(detailMessage , t);
-        this.exceptionErrorCode = exceptionErrorCode;
-    }
-
-
-
-
-
-    public AppException(String detailMessage) {
-        super(detailMessage);
-        this.exceptionErrorCode = ExceptionErrorCode.BAD_REQUEST;
-    }
-
-    public AppException(String detailMessage , Throwable t) {
-        super(detailMessage , t);
-        this.exceptionErrorCode = ExceptionErrorCode.BAD_REQUEST;
-    }
-
-
-
-
-
-    public AppException(Object data) {
-        super(ExceptionErrorCode.PARAM_ERROR.getDesc());
-        this.data = data;
-        this.exceptionErrorCode = ExceptionErrorCode.PARAM_ERROR;
-    }
-
-    public AppException(ExceptionErrorCode exceptionErrorCode, Object data) {
-        super(exceptionErrorCode.getDesc());
-        this.data = data;
-        this.exceptionErrorCode = exceptionErrorCode;
-    }
-
-    public AppException(ExceptionErrorCode exceptionErrorCode, String detailMessage , Object data) {
-        super(detailMessage);
-        this.data = data;
-        this.exceptionErrorCode = exceptionErrorCode;
-    }
-
-    public AppException(ExceptionErrorCode exceptionErrorCode, String detailMessage , Throwable t ,  Object data) {
-        super(detailMessage , t);
-        this.data = data;
-        this.exceptionErrorCode = exceptionErrorCode;
-    }
-
-
-
-
-
-    public ExceptionErrorCode getExceptionErrorCode() {
-        return exceptionErrorCode;
+    public String getExceptionErrorMsg() {
+        return this.errorMsg;
     }
 
     public Object getData() {

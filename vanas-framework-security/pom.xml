@@ -13,7 +13,7 @@
 	<packaging>jar</packaging>
 
 	<artifactId>vanas-framework-security</artifactId>
-	<version>1.0_res_210113</version>
+	<version>1.0.SR1</version>
 	<name>vanas-framework-security</name>
 	<description>Demo project for Spring Boot</description>
 
@@ -41,7 +41,7 @@
 		<dependency>
 			<groupId>com.35liuqi</groupId>
 			<artifactId>vanas-framework-core</artifactId>
-			<version>1.0_res_210113</version>
+			<version>1.0.SR1</version>
 		</dependency>
 
 	</dependencies>

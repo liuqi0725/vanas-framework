@@ -7,15 +7,17 @@ import com.liuqi.vanasframework.core.tuple.ex.RequestMsgResultTuple;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.beans.propertyeditors.CustomNumberEditor;
+import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributesModelMap;
 
 import javax.validation.constraints.NotNull;
+import java.beans.PropertyEditorSupport;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 类说明 <br>
@@ -94,7 +96,7 @@ public class AbstractController {
             }else if(obj instanceof RequestMsgResultTuple){
                 msgResult = (RequestMsgResultTuple) obj;
             }else{
-                throw new AppException(ExceptionErrorCode.PARAM_ERROR, String.format(errorMsg , obj.getClass().getName()) );
+                throw new AppException(ExceptionErrorCode.PARAM_ERROR.getCode(), String.format(errorMsg , obj.getClass().getName()) );
             }
         }
 
@@ -320,12 +322,12 @@ public class AbstractController {
             }else if(obj instanceof RequestMsgResultTuple){
                 msgResult = (RequestMsgResultTuple) obj;
             }else{
-                throw new AppException(ExceptionErrorCode.PARAM_ERROR, String.format(errorMsg , obj.getClass().getName()) );
+                throw new AppException(ExceptionErrorCode.PARAM_ERROR.getCode(), String.format(errorMsg , obj.getClass().getName()) );
             }
         }
 
         if(StringUtils.isEmpty(redirectUrl)){
-            throw new AppException(ExceptionErrorCode.NULL_ERROR , "Not found redirect URL." );
+            throw new AppException(ExceptionErrorCode.NULL_ERROR.getCode() , "Not found redirect URL." );
         }
 
         if(modelAndView == null){
@@ -376,12 +378,51 @@ public class AbstractController {
      */
     @InitBinder
     protected void initBinder(WebDataBinder binder) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        dateFormat.setLenient(false);
+//        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//        dateFormat.setLenient(false);
 
         //第二个参数是控制是否支持传入的值是空，这个值很关键，如果指定为false，那么如果前台没有传值的话就会报错
-        binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, true));
+        binder.registerCustomEditor(Date.class, new AppDateEditor());
         binder.registerCustomEditor(Integer.class, new CustomNumberEditor(Integer.class, true));
+        binder.registerCustomEditor(String.class, new StringTrimmerEditor(true)); // 字符串 null 不填充为"" 还是为null
 
+    }
+
+    private class AppDateEditor extends PropertyEditorSupport {
+
+        private final List<String> dateFormatAllow = new ArrayList<String>(){{
+            add("yyyy-MM-dd HH:mm:ss");
+            add("yyyyMMddHHmmss");
+            add("yyyy-MM-dd");
+            add("yyyyMMdd");
+        }};
+
+        @Override
+        public void setAsText(String text) throws IllegalArgumentException {
+            //通过两次异常的处理可以，绑定两次日期的格式
+            Date date = null;
+            boolean convertSuccess = Boolean.FALSE;
+
+            for (String s : dateFormatAllow) {
+                if (convert(text, s)) {
+                    convertSuccess = Boolean.TRUE;
+                    break;
+                }
+            }
+
+            if(!convertSuccess){
+                throw new AppException("转化时间类型字段错误。 传入值: "+text);
+            }
+        }
+
+        private Boolean convert(String dateText , String formatText){
+            SimpleDateFormat format = new SimpleDateFormat(formatText);
+            try {
+                setValue(format.parse(dateText));
+            } catch (ParseException ignore) {
+                return Boolean.FALSE;
+            }
+            return Boolean.TRUE;
+        }
     }
 }

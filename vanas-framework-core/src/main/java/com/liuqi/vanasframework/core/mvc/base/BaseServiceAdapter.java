@@ -51,7 +51,7 @@ public abstract class BaseServiceAdapter<Entity,PK extends Serializable> impleme
     public Entity selectOne(PK id) {
 
         if(id == null){
-            throw new AppException(ExceptionErrorCode.NULL_ERROR , "查询数据 ID 不能为空");
+            throw new AppException(ExceptionErrorCode.NULL_ERROR.getCode() , "查询数据 ID 不能为空");
         }
 
         return this.baseDao.selectByPK(id);
