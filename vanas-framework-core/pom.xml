@@ -20,7 +20,7 @@
 	<properties>
 		<java.version>1.8</java.version>
 		<rapid-framework.version>4.0</rapid-framework.version>
-		<fasterxml.jackson.version>2.9.0.pr3</fasterxml.jackson.version>
+		<fasterxml.jackson.version>2.12.7.1</fasterxml.jackson.version>
 		<commons.lang.version>2.6</commons.lang.version>
 	</properties>
 
