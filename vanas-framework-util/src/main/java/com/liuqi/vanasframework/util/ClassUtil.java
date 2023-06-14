@@ -99,7 +99,7 @@ public class ClassUtil {
 
     public void setClassLoader(ClassLoader classLoader){
 
-        log.info("设置VanasUtil.ClassUtil classLoader : {}",classLoader.getClass().getName());
+        log.info("设置 VanasUtil.ClassUtil classLoader : {}",classLoader.getClass().getName());
         this.classLoader = classLoader;
     }
 
@@ -155,24 +155,28 @@ public class ClassUtil {
             assert annotationClass != null;
             className = annotationClass.getName();
         }catch (NullPointerException e){
-            log.error("findClassWithPackageName 查找 [{}] 内，带注解的类. 注解 Class 不能为空!",packageName , e);
+            log.error("在指定包下查找对应带对应注解的 Class :: 注解 Class 不能为空!" , e);
             return classes;
         }
 
         // 替换包结构
         String packageDirName = convertClassPathToResourcePath(packageName);
+        log.info("在指定包下查找对应带对应注解的 Class :: 替换包路径为 >> {}" , packageDirName);
+        log.info("在指定包下查找对应带对应注解的 Class :: ClassLoader >> {}" , this.getClassLoader());
+        log.info("在指定包下查找对应带对应注解的 Class :: 开始查找带注解 {} 的类" , className);
+        log.info("在指定包下查找对应带对应注解的 Class :: ....START....");
+
 
         Enumeration<URL> urls;
         URL url;
         try {
-            log.info("findClassWithPackageName 查找 [{}] 内，带注解[{}]的类. ClassLoader:[{}] ....START....",packageName, className, this.getClassLoader());
 
             urls = this.getClassLoader().getResources(packageDirName);
 
-            log.info("findClassWithPackageName 获取 [{}] 下 resource URL : {}",packageDirName, urls);
+            log.info("在指定包下查找对应带对应注解的 Class :: 获取 {} 在 CLassLoader 中的 URL 路径 >> {} ", packageDirName, urls);
 
             if(urls == null){
-                log.warn("findClassWithPackageName [{}] 包下不存在 Resource。请核实路径.", packageName);
+                log.warn("在指定包下查找对应带对应注解的 Class :: [{}] 路径无法在 ClassLoader中获取。请核实路径.", packageDirName);
             }
 
             // 循环迭代下去
@@ -182,12 +186,12 @@ public class ClassUtil {
                 // 获取协议
                 String protocol = url.getProtocol();
 
-                log.info("findClassWithPackageName url [{}] , 文件协议 [{}] ",url.getPath() , protocol);
+                log.info("在指定包下查找对应带对应注解的 Class :: URL [{}] , 文件协议 [{}] ",url.getPath() , protocol);
 
                 if(protocol.equalsIgnoreCase(FILE_PROTOCOL)){
                     // 转化为路径
                     String filePath = URLDecoder.decode(url.getFile(), "UTF-8");
-                    logDetail("findClassWithPackageName 转化 URL [{}] 为文件路径 [{}]",url , filePath);
+                    logDetail("在指定包下查找对应带对应注解的 Class :: 转化 URL [{}] 为文件路径 [{}]",url , filePath);
 
                     // 过滤路径中的文件并转化为 class
                     classes.addAll(filterFile2Class(packageName , filePath , annotationClass));
@@ -195,16 +199,19 @@ public class ClassUtil {
                 }else if(protocol.equalsIgnoreCase(JAR_PROTOCOL)){
                     // JAR 文件
 //                    Resource[] resources = findAllClassPathResources(packageDirName);
+                    log.info("在指定包下查找对应带对应注解的 Class :: 在 Jar 包中去获取 Class ");
+
                     classes.addAll(findAllClassFromJar(url.getPath(), packageDirName , annotationClass));
                 }
             }
 
-            log.info("findClassWithPackageName 查找 [{}] 内，带注解[{}]的类 ....END....",packageName, className);
 
         }catch (Exception e){
-            log.error("findClassWithPackageName 查找 [{}] 内，带注解[{}]的类错误！！！",packageName , className,e);
+            log.error("在指定包下查找对应带对应注解的 Class :: 查找 [{}] 内，带注解[{}]的类错误！！！",packageDirName , className,e);
         }
 
+        log.info("在指定包下查找对应带对应注解的 Class :: [{}] 内查找注解 [{}] 类, 结果为 [{}] 个",packageDirName, className, classes.size());
+        log.info("在指定包下查找对应带对应注解的 Class :: ....END....");
         return classes;
     }
 
@@ -307,14 +314,13 @@ public class ClassUtil {
         try {
             int separatorIndex = jarFilePath.indexOf("*/");
 
-            logDetail("findAllClassFromResources jarFilePath [{}] index of '*/' = {} " ,jarFilePath , separatorIndex);
+            logDetail("在 Jar 包中查找 Class :: jarFilePath [{}] index of '*/' = {} " ,jarFilePath , separatorIndex);
 
             if (separatorIndex == -1) {
                 separatorIndex = jarFilePath.indexOf("!/");
 
-                logDetail("findAllClassFromResources jarFilePath [{}] index of '!/' = {} " ,jarFilePath , separatorIndex);
+                logDetail("在 Jar 包中查找 Class :: jarFilePath [{}] index of '!/' = {} " ,jarFilePath , separatorIndex);
             }
-
 
             if (separatorIndex != -1) {
                 // 截取 jar 路径
@@ -328,7 +334,7 @@ public class ClassUtil {
                 rootEntryPath = "";
             }
 
-            log.info("findAllClassFromResources jarFileUrl [{}] rootEntryPath = [{}] " ,jarFileUrl , rootEntryPath);
+            log.info("在 Jar 包中查找 Class :: jarFileUrl [{}] rootEntryPath = [{}] " ,jarFileUrl , rootEntryPath);
 
         } catch (ZipException var17) {
             logDetail("Skipping invalid jar classpath entry [" + jarFilePath + "]");
@@ -343,7 +349,7 @@ public class ClassUtil {
         List<Class<?>> classes = new ArrayList<>();
 
         if(jarFile == null){
-            log.warn("resolverJarFileFindClass jarFile is null ,Return.");
+            log.warn("匹配 Jar File中Class 是否符合规范 :: jarFile is null ,Return.");
             return classes;
         }
 
@@ -354,23 +360,26 @@ public class ClassUtil {
             resourceData = convertToResourceData(files.nextElement());
 
             if(!regxResourceIsClass(resourceData)){
-                logDetail("resolverJarFileFindClass resource [{}] is not class ,Return.",resourceData.getPath());
+                logDetail("匹配 Jar File中Class 是否符合规范 :: [{}] is not class ,Return.",resourceData.getPath());
                 continue;
             }
 
             if(!regxResourceIsFind(resourceData , findClassPattern)){
-                logDetail("resolverJarFileFindClass resource [{}] is not find ,Return.",resourceData.getPath());
+                logDetail("匹配 Jar File中Class 是否符合规范 :: [{}] is not find ,Return.",resourceData.getPath());
                 continue;
             }
+
             String filePath = this.convertResourcePathToClassPath(resourceData.getFilePath());
-            logDetail("resolverJarFileFindClass filePath [{}]",filePath);
+            logDetail("匹配 Jar File中Class 是否符合规范 :: 获取资源 URL 的文件路径为 [{}]",filePath);
             try {
 
                 Class<?> classz = this.getClassLoader().loadClass(filePath);
-                if(resolverClassHasAnnotation(classz, findAnnotation))
+                if(resolverClassHasAnnotation(classz, findAnnotation)){
+                    log.info("匹配 Jar File中Class 是否符合规范 :: [{}] 符合查找条件", classz.getName());
                     classes.add(classz);
+                }
             }catch (Exception e){
-                log.warn("反射查找类，转化路径 {} 为 class , 发生错误! ClassLoader is {}", filePath, this.getClassLoader());
+                log.warn("匹配 Jar File中Class 是否符合规范 :: {} 转为 Class 发生错误! ClassLoader is {}", filePath, this.getClassLoader());
             }
 
         }
@@ -380,7 +389,7 @@ public class ClassUtil {
 
     private JarResourceData convertToResourceData(JarEntry entry) {
 
-        logDetail("resolverResourceIsFind jarEntry name [{}]",entry.getName());
+        logDetail("匹配 Jar File中Class 是否符合规范 :: jarEntry name [{}]",entry.getName());
 
         return new JarResourceData(entry.getName());
     }
@@ -422,8 +431,9 @@ public class ClassUtil {
      */
     private boolean resolverClassHasAnnotation(Class<?> classz , Class annotationClassz){
         Annotation annotation = classz.getAnnotation(annotationClassz);
+
         if(annotation != null){
-            logDetail("resolverClassHasAnnotation class [{}] has Annotation [{}]",classz.getName(),annotationClassz.getName());
+            logDetail("匹配 Class 是否包含指定注解 :: Class [{}] 包含注解 [{}]",classz.getName(),annotationClassz.getName());
             return true;
         }
         return false;
@@ -444,8 +454,7 @@ public class ClassUtil {
         if(pathTo.contains("BOOT-INF.classes")){
             pathTo = pathTo.replace("BOOT-INF.classes.", "");
         }
-
-        logDetail("convertResourcePathToClassPath 替换路径 [{}] 为 [{}]",path , pathTo);
+        logDetail("转化 Jar 包内文件路径为 Class 路径 :: 替换路径 [{}] 为 [{}]",path , pathTo);
         return pathTo;
     }
 
@@ -460,7 +469,7 @@ public class ClassUtil {
     private String convertClassPathToResourcePath(String path){
         String pathTo = path.replace(PACKAGE_SEPARATOR,PACKAGE_PATH_SEPARATOR);
 
-        logDetail("convertClassPathToResourcePath 替换路径 [{}] 为 [{}]",path , pathTo);
+        logDetail("转化类路径 :: 替换路径 [{}] 为 [{}]",path , pathTo);
         return pathTo;
     }
 

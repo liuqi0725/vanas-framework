@@ -47,8 +47,19 @@ public class SaveLogAspect {
      */
     private VanasSaveLogAdapter adapter = null;
 
+    private ClassLoader classLoader = null;
+
+    private final boolean logDebug = log.isDebugEnabled();
+
     public SaveLogAspect(VanasSaveLogAdapter adapter){
         this.adapter = adapter;
+
+        try {
+            this.classLoader = Thread.currentThread().getContextClassLoader();
+            log.info("SaveLogAspect classLoader is [{}]",this.classLoader.toString());
+        } catch (Throwable var3) {
+            log.error("无法获取 ClassLoader");
+        }
     }
 
     /**
@@ -68,24 +79,24 @@ public class SaveLogAspect {
     public void saveLog(JoinPoint jp, Object object){
         Assert.notNull(adapter , "无法完成数据库日志记录，切面缺失 VanasSaveLogAdapter 的实现类. 你需要在您的应用中去 实现 [VanasSaveLogAdapter] 适配器。");
 
-        boolean logDebug = log.isDebugEnabled();
-
-
         String targetClassName = jp.getTarget().getClass().getName();
 
         log.info("SaveLogAspect [{}] 记录日志.",targetClassName);
 
-
         //获取处理类
         Class targetClass = null;
         try {
-            if(logDebug){
-                log.debug("SaveLogAspect [{}] Class.forName.",targetClassName);
-            }
-            targetClass = Class.forName(targetClassName);
+            targetClass = this.getClassWithClassForName(targetClassName);
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-            log.debug("SaveLogAspect [{}] Class.forName. Error !!",targetClassName , e);
+            try {
+                targetClass = this.getClassWithClassLoader(targetClassName);
+            } catch (ClassNotFoundException ex) {
+                ex.printStackTrace();
+                log.error("SaveLogAspect load class `{}` with use `Class.forName` " +
+                                "and `classLoader::{}` both Error . " +
+                                "Make sure it can do this or check the class is exits .",
+                        targetClassName, this.classLoader.toString(), ex);
+            }
         }
 
         if(targetClass == null){
@@ -119,6 +130,20 @@ public class SaveLogAspect {
 
         adapter.saveLog( targetClassName, methodName , operationType , operationDesc , object);
 
+    }
+
+    private Class getClassWithClassForName(String className) throws ClassNotFoundException {
+        if(this.logDebug){
+            log.debug("SaveLogAspect load class `{}` with Class.forName.", className);
+        }
+        return Class.forName(className);
+    }
+
+    private Class getClassWithClassLoader(String className) throws ClassNotFoundException{
+        if(logDebug){
+            log.debug("SaveLogAspect load class `{}` with `classLoader::{}`",className, this.classLoader.toString());
+        }
+        return this.classLoader.loadClass(className);
     }
 
 }

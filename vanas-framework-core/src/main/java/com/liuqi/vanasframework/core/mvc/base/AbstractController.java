@@ -5,7 +5,6 @@ import com.liuqi.vanasframework.core.conf.norm.ResultStatus;
 import com.liuqi.vanasframework.core.exception.AppException;
 import com.liuqi.vanasframework.core.tuple.ex.RequestMsgResultTuple;
 import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.beans.propertyeditors.CustomNumberEditor;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.web.bind.WebDataBinder;

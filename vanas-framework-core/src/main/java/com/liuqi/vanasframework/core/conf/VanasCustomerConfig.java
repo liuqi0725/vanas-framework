@@ -36,6 +36,11 @@ public class VanasCustomerConfig implements Serializable {
     private boolean vcEnabled = Boolean.FALSE;
 
     /**
+     * 缓存模式 默认ehcache 支持redis
+     */
+    private String cacheMode = "ehcache";
+
+    /**
      * 模板引擎
      */
     private String viewEngine = "freemarker";
