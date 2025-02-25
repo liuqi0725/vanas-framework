@@ -1,5 +1,6 @@
-package com.liuqi.vanasframework.util;
+package com.liuqi.vanasframework.core.util;
 
+import cn.hutool.core.util.IdUtil;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -113,5 +114,32 @@ public class WebUtils {
      */
     private static String createUniqueSessionKey(){
         return UUID.randomUUID().toString();
+    }
+
+    private final static String REQUEST_ID_KEY = "REQUEST_ID";
+
+    private final static String REQUEST_START_TIME_KEY = "REQUEST_START_TIME";
+
+    public static void setRequestId(){
+        getRequest().setAttribute(REQUEST_ID_KEY, IdUtil.simpleUUID());
+    }
+
+    public static String getRequestId(){
+        try {
+            // 尝试获取 request 对象并从中提取 REQUEST_ID_KEY 属性
+            return (String) getRequest().getAttribute(REQUEST_ID_KEY);
+        } catch (NullPointerException e) {
+            // 若发生 NullPointerException，则返回空字符串
+            return "";
+        }
+    }
+
+    public static void setRequestStartTime(){
+        getRequest().setAttribute(REQUEST_START_TIME_KEY, System.currentTimeMillis());
+    }
+
+    public static long getRequestTime(){
+        long start = (long) getRequest().getAttribute(REQUEST_START_TIME_KEY);
+        return System.currentTimeMillis() - start;
     }
 }

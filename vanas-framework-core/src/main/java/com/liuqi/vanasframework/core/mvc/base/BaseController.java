@@ -1,15 +1,23 @@
 package com.liuqi.vanasframework.core.mvc.base;
 
+import com.liuqi.vanasframework.core.conf.norm.ExceptionErrorCode;
 import com.liuqi.vanasframework.core.conf.norm.ResultStatus;
+import com.liuqi.vanasframework.core.exception.AppException;
 import com.liuqi.vanasframework.core.mvc.handler.ResponseJsonHandler;
 import com.liuqi.vanasframework.core.mvc.res.DataResult;
 import com.liuqi.vanasframework.core.mvc.res.PageDataResult;
+import com.liuqi.vanasframework.core.mvc.res.PageDataVO;
 import com.liuqi.vanasframework.core.tuple.ex.RequestMsgResultTuple;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributesModelMap;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * 类说明 <br>
@@ -83,6 +91,32 @@ public class BaseController extends AbstractController{
         ret.put("msg", res.getMsg());
         ret.put("count", res.getTotal() == null ? 0 : res.getTotal());
         ret.put("data", res.getPageData());
+        return ret;
+    }
+
+    /**
+     * 返回 layui table 的数据类型
+     * @param status 是否成功
+     * @param res 分页查询返回值 {@link PageDataVO}
+     * @return map
+     */
+    protected <T> Map<String, Object> renderLayuiTableData(Boolean status, PageDataVO<T> res){
+        return this.renderLayuiTableData(status, null, res);
+    }
+
+    /**
+     * 返回 layui table 的数据类型
+     * @param status 是否成功
+     * @param msg 错误信息
+     * @param res 分页查询返回值 {@link PageDataVO}
+     * @return map
+     */
+    protected <T> Map<String, Object> renderLayuiTableData(Boolean status, String msg, PageDataVO<T> res){
+        Map<String, Object> ret = new HashMap<>();
+        ret.put("code", status ? 0 : 1);
+        ret.put("msg", msg);
+        ret.put("count", res != null ? res.getTotal() : 0);
+        ret.put("data", res != null ? res.getRecords() : null);
         return ret;
     }
 
@@ -218,4 +252,16 @@ public class BaseController extends AbstractController{
         mav.addObject(RETURN_CLIENT_MSG_TYPE,ResultStatus.ERROR);
     }
 
+    /**
+     * 验证参数
+     * @param bindingResult
+     */
+    public void validParams(BindingResult bindingResult){
+        List<ObjectError> allErrors = bindingResult.getAllErrors();
+
+        if(!allErrors.isEmpty()) {
+            List<String> errors = allErrors.stream().map(DefaultMessageSourceResolvable::getDefaultMessage).collect(Collectors.toList());
+            throw new AppException(ExceptionErrorCode.PARAM_ERROR.getCode(), String.join(",", errors));
+        }
+    }
 }

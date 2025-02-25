@@ -16,7 +16,6 @@ import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.net.URLClassLoader;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -489,7 +488,7 @@ public class ClassUtil {
         if(this.classLoader == null)
             return Thread.currentThread().getContextClassLoader();
 
-        return (URLClassLoader)this.classLoader;
+        return this.classLoader;
     }
 
     public ResourceLoader getResourceLoader() {

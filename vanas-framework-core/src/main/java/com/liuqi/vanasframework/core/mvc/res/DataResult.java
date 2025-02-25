@@ -20,10 +20,12 @@ import java.util.Map;
  *   DataResult ret = new DataResult();
  *   }
  *
+ *   V1.0.SR2 逐步废弃，采用 ResponseDataVO
  *
  * @author : alexliu
  * @version v1.0 , Create at 12:53 PM 2018/11/9
  */
+@Deprecated
 public class DataResult {
 
     private boolean status = true;

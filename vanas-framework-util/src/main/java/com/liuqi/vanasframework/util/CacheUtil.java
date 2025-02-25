@@ -2,7 +2,6 @@ package com.liuqi.vanasframework.util;
 
 
 import com.liuqi.vanasframework.core.Vanas;
-import com.liuqi.vanasframework.core.exception.AppException;
 import com.liuqi.vanasframework.util.lang.manager.ArrayListCacheDataManager;
 import com.liuqi.vanasframework.util.lang.manager.LinkedListCacheDataManager;
 import com.liuqi.vanasframework.util.lang.manager.SetCacheDataManager;
@@ -52,6 +51,31 @@ public class CacheUtil {
      */
     public void setVal(String cacheName, Object key , Object val){
         Objects.requireNonNull(Vanas.cacheManager.getCache(cacheName)).put(key , val);
+    }
+
+    /**
+     * 判断 key 是否存在
+     * @param cacheName
+     * @param key
+     * @return
+     */
+    public boolean isKeyPresent(String cacheName, Object key){
+        try {
+            CacheUtil.getInstance().getVal(cacheName,key);
+        }catch (NullPointerException e){
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * 删除指定key值
+     * @param cacheName 缓存名称
+     * @param key 存储对象 key
+     * @throws NullPointerException 空指针
+     */
+    public void evict(String cacheName, Object key){
+        Objects.requireNonNull(Vanas.cacheManager.getCache(cacheName)).evictIfPresent(key);
     }
 
 

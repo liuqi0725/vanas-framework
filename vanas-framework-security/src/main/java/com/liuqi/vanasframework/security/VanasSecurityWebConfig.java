@@ -14,6 +14,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.header.writers.frameoptions.WhiteListedAllowFromStrategy;
 import org.springframework.security.web.header.writers.frameoptions.XFrameOptionsHeaderWriter;
 import org.springframework.util.Assert;
@@ -87,7 +88,9 @@ public class VanasSecurityWebConfig extends WebSecurityConfigurerAdapter {
             http.csrf().disable();
         }else{
             // 不关闭 csrf  开启 druid csrf 过滤
-            http.csrf().ignoringAntMatchers(Vanas.customerConfig.getSecurity().getCsrfPermitUrl());
+            http.csrf()
+                    .ignoringAntMatchers(Vanas.customerConfig.getSecurity().getCsrfPermitUrl())
+                    .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
         }
 
         http.logout().permitAll().logoutSuccessUrl(Vanas.customerConfig.getSecurity().getLoginOutSuccessUrl());    // 退出登录成功页面

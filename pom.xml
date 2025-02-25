@@ -46,6 +46,8 @@
 		<java.version>1.8</java.version>
 		<mybatis.version>2.1.1</mybatis.version>
 		<springboot.version>2.2.5.RELEASE</springboot.version>
+		<hutool.version>5.8.25</hutool.version>
+
 	</properties>
 
 	<!-- 模块 -->
@@ -86,6 +88,12 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-starter-log4j2</artifactId>
 				<version>${springboot.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>cn.hutool</groupId>
+				<artifactId>hutool-all</artifactId>
+				<version>${hutool.version}</version>
 			</dependency>
 
 			<!-- junit 测试 -->

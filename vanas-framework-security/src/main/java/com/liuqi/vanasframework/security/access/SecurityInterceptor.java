@@ -1,6 +1,6 @@
 package com.liuqi.vanasframework.security.access;
 
-import com.liuqi.vanasframework.security.access.SecurityDecisionManager;
+import com.liuqi.vanasframework.core.util.WebUtils;
 import org.springframework.security.access.SecurityMetadataSource;
 import org.springframework.security.access.intercept.AbstractSecurityInterceptor;
 import org.springframework.security.access.intercept.InterceptorStatusToken;
@@ -46,6 +46,11 @@ public class SecurityInterceptor extends AbstractSecurityInterceptor implements 
         // 2. 调用 SystemAccessDecisionManager  的decide方法来校验用户的权限是否足够
         //super.setRejectPublicInvocations(true);
         InterceptorStatusToken token = super.beforeInvocation(fi);
+
+        // 设置requestId
+        WebUtils.setRequestId();
+        // 设置request 开始时间
+        WebUtils.setRequestStartTime();
 
         try {
             //执行下一个拦截器
