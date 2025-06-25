@@ -13,9 +13,9 @@ public interface VanasSerialGenerator {
 
     /**
      * <p>
-     * 生成无状态唯一ID.   <br/>
-     * 业务前缀长度为 3    <br/>
-     * 序列号长度： 6 位     <br/>
+     * 生成无状态唯一ID.   <br>
+     * 业务前缀长度为 3    <br>
+     * 序列号长度： 6 位     <br>
      * 日期格式为 yyyyMMddHHmmssSSS
      * </P>
      * @param bizType 业务类型(如: ORDER)
@@ -25,8 +25,8 @@ public interface VanasSerialGenerator {
 
     /**
      * <p>
-     * 生成无状态唯一ID.  <br/>
-     * 序列号长度： 6 位     <br/>
+     * 生成无状态唯一ID.  <br>
+     * 序列号长度： 6 位     <br>
      * 日期格式为 yyyyMMddHHmmssSSS
      * </P>
      * @param bizType 业务类型(如: ORDER)
@@ -37,8 +37,8 @@ public interface VanasSerialGenerator {
 
     /**
      * <p>
-     * 生成无状态唯一ID.  <br/>
-     * 序列号长度： 6 位     <br/>
+     * 生成无状态唯一ID.  <br>
+     * 序列号长度： 6 位     <br>
      * </p>
      * @param bizType 业务类型(如: ORDER)
      * @param prefixLength 业务前缀长度(如: 3 则会截取 bizType 前3位)
