@@ -5,14 +5,14 @@
 	<parent>
 		<groupId>com.35liuqi</groupId>
 		<artifactId>vanas-framework</artifactId>
-		<version>1.0_res_210113</version>
+		<version>2.0.RES</version> <!-- 20250509 变更版本号 1.0_res_210113 - 2.0.RES -->
 		<relativePath>../pom.xml</relativePath> <!-- lookup parent from repository -->
 	</parent>
 
 	<packaging>jar</packaging>
 
 	<artifactId>vanas-framework-util</artifactId>
-	<version>1.0.SR1</version>
+	<version>2.1.RES</version> <!-- 20250509 变更版本号 1.0.SR1 - 2.0.RES   20250617 2.0.RES - 2.1.RES  新的缓存管理器，只支持redis -->
 	<name>vanas-framework-util</name>
 	<description>Demo project for Spring Boot</description>
 
@@ -29,12 +29,27 @@
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-configuration-processor</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-redis</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-log4j2</artifactId>
 		</dependency>
 
 		<dependency>
 			<groupId>org.yaml</groupId>
 			<artifactId>snakeyaml</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>cn.hutool</groupId>
+			<artifactId>hutool-all</artifactId>
 		</dependency>
 
 		<!-- json -->

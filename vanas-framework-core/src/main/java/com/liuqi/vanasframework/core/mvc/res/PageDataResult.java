@@ -13,10 +13,11 @@ import java.util.List;
  *   DataResult ret = new DataResult();
  *   }
  *
- *
+ * @deprecated 已废弃， 请替换 PageDataVO
  * @author : alexliu
  * @version v1.0 , Create at 12:53 PM 2018/11/9
  */
+@Deprecated
 public class PageDataResult extends DataResult {
 
     private List pageData;

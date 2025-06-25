@@ -3,7 +3,7 @@ package com.liuqi.vanasframework.core.conf;
 import lombok.Data;
 import org.apache.commons.lang.StringUtils;
 
-import javax.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotEmpty;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;

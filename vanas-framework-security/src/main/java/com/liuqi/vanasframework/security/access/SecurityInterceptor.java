@@ -1,6 +1,7 @@
 package com.liuqi.vanasframework.security.access;
 
 import com.liuqi.vanasframework.core.util.WebUtils;
+import lombok.extern.java.Log;
 import org.springframework.security.access.SecurityMetadataSource;
 import org.springframework.security.access.intercept.AbstractSecurityInterceptor;
 import org.springframework.security.access.intercept.InterceptorStatusToken;
@@ -22,6 +23,7 @@ import java.io.IOException;
  * @author : alexliu
  * @version v1.0 , Create at 9:25 PM 2020/3/2
  */
+@Log
 public class SecurityInterceptor extends AbstractSecurityInterceptor implements Filter {
 
     /**
@@ -45,7 +47,13 @@ public class SecurityInterceptor extends AbstractSecurityInterceptor implements 
         // 1. 调用 SystemInvocationSecurityMetadataSource 的 getAttributes(Object object)这个方法获取fi对应的所有权限
         // 2. 调用 SystemAccessDecisionManager  的decide方法来校验用户的权限是否足够
         //super.setRejectPublicInvocations(true);
-        InterceptorStatusToken token = super.beforeInvocation(fi);
+        InterceptorStatusToken token;
+        try {
+            token = super.beforeInvocation(fi);
+        }catch (Exception e){
+            logger.error("拦截器获取 token错误 ", e);
+            throw e;
+        }
 
         // 设置requestId
         WebUtils.setRequestId();
