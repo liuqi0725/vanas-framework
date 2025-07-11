@@ -67,7 +67,7 @@ public class VanasRedisCacheUtil {
      * @param value 缓存的值
      */
     public <T> void setCacheObject(final String key, final T value) {
-        System.out.println(redisTemplate.getValueSerializer());
+//        System.out.println(redisTemplate.getValueSerializer());
         redisTemplate.opsForValue().set(key, value);
     }
 
@@ -80,7 +80,7 @@ public class VanasRedisCacheUtil {
      * @param timeUnit 时间颗粒度
      */
     public <T> void setCacheObject(final String key, final T value, final Integer timeout, final TimeUnit timeUnit) {
-        System.out.println(redisTemplate.getValueSerializer());
+//        System.out.println(redisTemplate.getValueSerializer());
         redisTemplate.opsForValue().set(key, value, timeout, timeUnit);
     }
 
