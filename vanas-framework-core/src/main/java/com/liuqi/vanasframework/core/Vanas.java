@@ -4,6 +4,7 @@ package com.liuqi.vanasframework.core;
 import com.liuqi.vanasframework.core.conf.VanasCustomerConfig;
 import org.springframework.cache.CacheManager;
 import org.springframework.context.ApplicationContext;
+import org.springframework.data.redis.core.RedisTemplate;
 
 /**
  * 类说明 <br>
@@ -20,4 +21,5 @@ public class Vanas {
 
     public static VanasCustomerConfig customerConfig;
 
+    public static RedisTemplate<String, Object> redisTemplate;
 }

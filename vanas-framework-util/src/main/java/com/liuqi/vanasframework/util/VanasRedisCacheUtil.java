@@ -2,6 +2,10 @@ package com.liuqi.vanasframework.util;
 
 import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.liuqi.vanasframework.core.Vanas;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.*;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -20,17 +24,32 @@ import java.util.concurrent.TimeUnit;
  * @version v1.0 , Create at 2025/6/17 14:39
  */
 @SuppressWarnings(value = {"unchecked", "rawtypes"})
-@Component
 public class VanasRedisCacheUtil {
 
     private final RedisTemplate redisTemplate;
 
     private final ObjectMapper objectMapper; // Spring Boot 默认已经配置好的 ObjectMapper
 
-    public VanasRedisCacheUtil(RedisTemplate redisTemplate, ObjectMapper objectMapper) {
+    private static volatile VanasRedisCacheUtil instance;
+
+    private VanasRedisCacheUtil(RedisTemplate<String, Object> redisTemplate, ObjectMapper objectMapper) {
         this.redisTemplate = redisTemplate;
         this.objectMapper = objectMapper;
     }
+
+    public static VanasRedisCacheUtil getInstance() {
+        if (instance == null) {
+            synchronized (VanasRedisCacheUtil.class) {
+                if (instance == null) {
+                    RedisTemplate redisTemplate = Vanas.redisTemplate;
+                    ObjectMapper objectMapper = Vanas.SpringContext.getBean(ObjectMapper.class);
+                    instance = new VanasRedisCacheUtil(redisTemplate, objectMapper);
+                }
+            }
+        }
+        return instance;
+    }
+
 
     /**
      * 判断key是否存在
@@ -48,6 +67,7 @@ public class VanasRedisCacheUtil {
      * @param value 缓存的值
      */
     public <T> void setCacheObject(final String key, final T value) {
+        System.out.println(redisTemplate.getValueSerializer());
         redisTemplate.opsForValue().set(key, value);
     }
 
@@ -60,6 +80,7 @@ public class VanasRedisCacheUtil {
      * @param timeUnit 时间颗粒度
      */
     public <T> void setCacheObject(final String key, final T value, final Integer timeout, final TimeUnit timeUnit) {
+        System.out.println(redisTemplate.getValueSerializer());
         redisTemplate.opsForValue().set(key, value, timeout, timeUnit);
     }
 

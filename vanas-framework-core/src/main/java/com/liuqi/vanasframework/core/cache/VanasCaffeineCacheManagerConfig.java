@@ -20,13 +20,10 @@ import java.util.Map;
  * @author : lau.Q
  * @version v1.0 , Create at 2025/5/6 15:07
  */
-@Configuration
-@ConditionalOnProperty(name = "vanas.cache-type", havingValue = "caffeine", matchIfMissing = true) // 根据配置决定
-public class VanasCaffeineCacheManagerConfig {
+public class VanasCaffeineCacheManagerConfig implements VanasCacheManager{
 
-    @Bean
-    public CacheManager caffeineCacheManager() {
-
+    @Override
+    public CacheManager getCacheManager() {
         CaffeineCacheManager cacheManager = new CaffeineCacheManager();
 
         Map<String, Duration> spec = new HashMap<>();
@@ -44,5 +41,4 @@ public class VanasCaffeineCacheManagerConfig {
 
         return cacheManager;
     }
-
 }

@@ -19,7 +19,7 @@
 
 	<properties>
 		<rapid-framework.version>4.0</rapid-framework.version>
-		<fasterxml.jackson.version>2.9.0.pr3</fasterxml.jackson.version>
+		<fasterxml.jackson.version>2.13.5</fasterxml.jackson.version>
 		<commons.lang.version>2.6</commons.lang.version>
 	</properties>
 

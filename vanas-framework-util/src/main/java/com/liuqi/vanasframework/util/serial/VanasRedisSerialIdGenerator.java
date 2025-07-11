@@ -3,7 +3,6 @@ package com.liuqi.vanasframework.util.serial;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import com.liuqi.vanasframework.util.VanasRedisCacheUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -19,13 +18,6 @@ import java.util.concurrent.TimeUnit;
  */
 @Component
 public class VanasRedisSerialIdGenerator implements VanasSerialGenerator{
-
-    private final VanasRedisCacheUtil redisCacheUtil;
-
-    @Autowired
-    public VanasRedisSerialIdGenerator(VanasRedisCacheUtil redisCacheUtil) {
-        this.redisCacheUtil = redisCacheUtil;
-    }
 
 
     @Override
@@ -59,7 +51,7 @@ public class VanasRedisSerialIdGenerator implements VanasSerialGenerator{
         // 3. Redis 自增键
         String redisKey = StrUtil.format("vanas:serial:data_{}", bizPrefix);
         // 设置过期时间为 2 天，防止 Redis 永久增长
-        long serial = redisCacheUtil.increment(redisKey, 2, TimeUnit.DAYS);
+        long serial = VanasRedisCacheUtil.getInstance().increment(redisKey, 2, TimeUnit.DAYS);
 
         // 4. 格式化序列号（不足位补0）
         String serialStr = StrUtil.padPre(String.valueOf(serial), serialLength, '0');
