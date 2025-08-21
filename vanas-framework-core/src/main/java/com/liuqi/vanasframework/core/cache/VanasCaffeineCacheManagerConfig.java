@@ -6,6 +6,7 @@ import org.springframework.cache.CacheManager;
 import org.springframework.cache.caffeine.CaffeineCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 
 import java.time.Duration;
 import java.util.HashMap;
@@ -23,6 +24,7 @@ import java.util.Map;
 public class VanasCaffeineCacheManagerConfig implements VanasCacheManager{
 
     @Override
+    @Primary
     public CacheManager getCacheManager() {
         CaffeineCacheManager cacheManager = new CaffeineCacheManager();
 

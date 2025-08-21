@@ -1,6 +1,7 @@
 package com.liuqi.vanasframework.core.aspect;
 
 import com.liuqi.vanasframework.core.adapter.VanasSaveLogAdapter;
+import com.liuqi.vanasframework.core.adapter.VanasSaveOpLogAdapter;
 import com.liuqi.vanasframework.core.annotation.SaveLog;
 import com.liuqi.vanasframework.core.conf.norm.SaveLogType;
 import lombok.extern.log4j.Log4j2;
@@ -45,13 +46,13 @@ public class SaveLogAspect {
      *     }
      * </pre>
      */
-    private VanasSaveLogAdapter adapter = null;
+    private VanasSaveOpLogAdapter adapter = null;
 
     private ClassLoader classLoader = null;
 
     private final boolean logDebug = log.isDebugEnabled();
 
-    public SaveLogAspect(VanasSaveLogAdapter adapter){
+    public SaveLogAspect(VanasSaveOpLogAdapter adapter){
         this.adapter = adapter;
 
         try {
@@ -128,7 +129,7 @@ public class SaveLogAspect {
             log.debug("SaveLogAspect [{}] type:{} , desc : {}",targetClassName , operationType,operationDesc);
         }
 
-        adapter.saveLog( targetClassName, methodName , operationType , operationDesc , object);
+//        adapter.saveLog( targetClassName, methodName , operationType , operationDesc , object);
 
     }
 

@@ -189,11 +189,11 @@
 
 				<repository>
 					<id>nexus-releases</id>
-					<url>http://nexus.iyzi.cloud/repository/maven-releases/</url>
+					<url>https://nexus.iyzi.cloud/repository/maven-releases/</url>
 				</repository>
 				<snapshotRepository>
 					<id>nexus-snapshots</id>
-					<url>http://nexus.iyzi.cloud/repository/maven-snapshots/</url>
+					<url>https://nexus.iyzi.cloud/repository/maven-snapshots/</url>
 				</snapshotRepository>
 
 			</distributionManagement>

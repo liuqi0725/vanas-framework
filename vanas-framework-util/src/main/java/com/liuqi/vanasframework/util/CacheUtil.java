@@ -168,6 +168,7 @@ public class CacheUtil {
      *     {@link #getSetCacheDataManager(String, Object)}<br>
      *     {@link #getLinkedListCacheDataManager(String, Object)}<br>
      */
+    @Deprecated
     public <T> void addItemInCacheData(String cacheName, Object key , Class<T> classz , T item){
         List<T> cacheDataList = this.getValAsList(cacheName , key , classz);
         cacheDataList.add(item);
@@ -191,6 +192,7 @@ public class CacheUtil {
      *     {@link #getSetCacheDataManager(String, Object)}<br>
      *     {@link #getLinkedListCacheDataManager(String, Object)}<br>
      */
+    @Deprecated
     public <T> void removeItemFromCacheData(String cacheName, String key , Class<T> classz , T item){
         List<T> cacheDataList = this.getValAsList(cacheName,key,classz);
         for(int i=0; i<cacheDataList.size(); i++){
@@ -234,6 +236,7 @@ public class CacheUtil {
      *     {@link #getSetCacheDataManager(String, Object)}<br>
      *     {@link #getLinkedListCacheDataManager(String, Object)}<br>
      */
+    @Deprecated
     public synchronized <T> void replace(String cacheName, Object key , Class<T> classz , T replaceItem){
         List<T> cacheDataList = this.getValAsList(cacheName , key , classz);
 
@@ -262,6 +265,7 @@ public class CacheUtil {
      *     {@link #getSetCacheDataManager(String, Object)}<br>
      *     {@link #getLinkedListCacheDataManager(String, Object)}<br>
      */
+    @Deprecated
     public <T> List<T> getValAsList(String cacheName, Object key , Class<T> classz){
         List<T> var1 = new ArrayList<>();
         Object obj = getCacheData(cacheName,key);
@@ -274,6 +278,30 @@ public class CacheUtil {
 
     private Object getCacheData(String cacheName, Object key){
         return Objects.requireNonNull(getCache(cacheName).get(key)).get();
+    }
+
+
+    /**
+     * 清空某个缓存
+     * @param cacheName 缓存名称
+     */
+    public void clearCache(String cacheName) {
+        Cache cache = Vanas.cacheManager.getCache(cacheName);
+        if (cache != null) {
+            cache.clear();
+        }
+    }
+
+    /**
+     * 清空所有缓存
+     */
+    public void clearAll() {
+        for (String cacheName : Vanas.cacheManager.getCacheNames()) {
+            Cache cache = Vanas.cacheManager.getCache(cacheName);
+            if (cache != null) {
+                cache.clear();
+            }
+        }
     }
 
 }

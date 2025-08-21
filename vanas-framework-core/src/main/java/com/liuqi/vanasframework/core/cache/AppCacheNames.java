@@ -13,10 +13,10 @@ public class AppCacheNames {
     /**
      * 常用数据缓存，失效时间 30 分钟
      */
-    public final static String DATA_CACHE = "dataCache";
+    public final static String DATA_CACHE = "data";
 
     /**
      * 配置缓存，失效时间 无
      */
-    public final static String SETTING_CACHE = "settingCache";
+    public final static String SETTING_CACHE = "setting";
 }

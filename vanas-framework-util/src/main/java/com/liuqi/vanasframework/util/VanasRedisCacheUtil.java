@@ -42,7 +42,7 @@ public class VanasRedisCacheUtil {
             synchronized (VanasRedisCacheUtil.class) {
                 if (instance == null) {
                     RedisTemplate redisTemplate = Vanas.redisTemplate;
-                    ObjectMapper objectMapper = Vanas.SpringContext.getBean(ObjectMapper.class);
+                    ObjectMapper objectMapper = (ObjectMapper) Vanas.SpringContext.getBean("redisObjectMapper");
                     instance = new VanasRedisCacheUtil(redisTemplate, objectMapper);
                 }
             }

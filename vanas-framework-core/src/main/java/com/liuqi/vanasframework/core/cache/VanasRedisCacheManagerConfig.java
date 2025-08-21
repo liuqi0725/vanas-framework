@@ -2,14 +2,8 @@ package com.liuqi.vanasframework.core.cache;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.liuqi.vanasframework.core.Vanas;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cache.CacheManager;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -20,7 +14,9 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import java.time.Duration;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * 类说明 <br>
@@ -48,7 +44,7 @@ public class VanasRedisCacheManagerConfig implements VanasCacheManager{
 
         RedisConnectionFactory redisConnectionFactory = applicationContext.getBean(RedisConnectionFactory.class);
 
-        ObjectMapper objectMapper = Vanas.SpringContext.getBean(ObjectMapper.class);
+        ObjectMapper objectMapper = (ObjectMapper) Vanas.SpringContext.getBean("redisObjectMapper");
 
         // 配置redis 对象到json的序列化
         GenericJackson2JsonRedisSerializer jsonSerializer = new GenericJackson2JsonRedisSerializer(objectMapper);
@@ -68,13 +64,29 @@ public class VanasRedisCacheManagerConfig implements VanasCacheManager{
         // settingCache配置，永不过期
         cacheConfigurations.put(AppCacheNames.SETTING_CACHE, defaultCacheConfig.entryTtl(Duration.ZERO));
 
+        // 打印所有缓存配置（调试用）
+//        cacheConfigurations.forEach((name, config) -> {
+//            System.out.println("VANAS REDIS CACHE SET: " + name + ", TTL: " + config.getTtl().getSeconds() + "秒");
+//        });
+
+        RedisCacheManager redisCacheManager = RedisCacheManager.builder(redisConnectionFactory)
+                .initialCacheNames(cacheConfigurations.keySet())    // ✅ 配置缓存key
+                .cacheDefaults(defaultCacheConfig)
+                .withInitialCacheConfigurations(cacheConfigurations)
+//                .transactionAware() // 支持事务
+                .build();
+
+        // RedisCacheManager 的 afterPropertiesSet() 方法里会把你设置的 initialCacheConfigurations 拷贝到内部结构
+        // （如 cacheConfigurations、cacheMap）中，并初始化缓存实例。如果你不调用这个方法，getCache() 获取到的就是一个
+        // 空配置的新缓存实例，ttl 等都不会生效
+        //
+        // 如果是通过 @bean 自动装配则无需如此，  afterPropertiesSet 主要用于通过new等方式创建。
+        redisCacheManager.afterPropertiesSet();
+
         // 创建redisTemplate
         this.createTemplate(redisConnectionFactory, stringSerializer, jsonSerializer);
 
-        return RedisCacheManager.builder(redisConnectionFactory)
-                .cacheDefaults(defaultCacheConfig)
-                .withInitialCacheConfigurations(cacheConfigurations)
-                .build();
+        return redisCacheManager;
     }
 
     /**

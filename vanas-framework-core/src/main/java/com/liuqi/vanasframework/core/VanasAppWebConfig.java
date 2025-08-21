@@ -7,9 +7,11 @@ import com.liuqi.vanasframework.core.mvc.view.FreeMarkerConfig;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.cache.CacheManager;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -60,7 +62,22 @@ public abstract class VanasAppWebConfig implements WebMvcConfigurer, Application
         log.info("Vanas Customer Config success set on. {}", vanasCustomerConfig);
         Vanas.customerConfig = vanasCustomerConfig;
         log.info("Vanas CacheManager success set on. ");
-        Vanas.cacheManager = getCacheManager(applicationContext);
+
+        // 3. 创建 CacheManager 并注册为 Spring Bean（覆盖默认的）
+        if (applicationContext instanceof ConfigurableApplicationContext) {
+            ConfigurableListableBeanFactory beanFactory =
+                    ((ConfigurableApplicationContext) applicationContext).getBeanFactory();
+
+            // 3.1 通过工厂创建 CacheManager
+            CacheManager cacheManager = getCacheManager(applicationContext);
+
+            // 3.2 注册为 Primary Bean（关键！）
+            beanFactory.registerSingleton("cacheManager", cacheManager);
+//            beanFactory.registerAlias("cacheManager", "org.springframework.cache.CacheManager");
+
+            // 3.3 存储到 Vanas.cacheManager（兼容旧代码）
+            Vanas.cacheManager = cacheManager;
+        }
     }
 
     private CacheManager getCacheManager(ApplicationContext applicationContext){
